@@ -1,29 +1,13 @@
 import { gql } from "@apollo/client";
 
-export const DATA = gql`
-    query {
-        climatewall {
-            data {
-                attributes {
-                    Words {
-                        word
-                    }
-                    Questions {
-                        question
-                    }
-                }
-            }
-        }
-    }
-`;
-
-export const WORDS = gql`
-    query {
-        words {
+export const GET_APPROVED = gql`
+    query responses {
+        responses(filters: { approved: { eq: true } }) {
             data {
                 id
                 attributes {
-                    word
+                    response
+                    createdAt
                     approved
                 }
             }
@@ -31,13 +15,14 @@ export const WORDS = gql`
     }
 `;
 
-export const QUESTIONS = gql`
-    query {
-        questions {
+export const GET_DENIED = gql`
+    query responses {
+        responses(filters: { approved: { eq: false } }) {
             data {
                 id
                 attributes {
-                    question
+                    response
+                    createdAt
                     approved
                 }
             }
@@ -45,11 +30,14 @@ export const QUESTIONS = gql`
     }
 `;
 
-export const APPROVE_WORD = gql`
-    mutation approveWord($id: ID!, $approved: Boolean) {
-        updateWord(id: $id, data: { approved: $approved }) {
+export const GET_AWAITING = gql`
+    query responses {
+        responses(filters: { approved: { eq: null } }) {
             data {
+                id
                 attributes {
+                    response
+                    createdAt
                     approved
                 }
             }
@@ -57,49 +45,9 @@ export const APPROVE_WORD = gql`
     }
 `;
 
-export const APPROVE_QUESTION = gql`
-    mutation approveQuestion($id: ID!, $approved: Boolean) {
-        updateQuestion(id: $id, data: { approved: $approved }) {
-            data {
-                attributes {
-                    approved
-                }
-            }
-        }
-    }
-`;
-
-export const ADD_WORD = gql`
-    mutation addWord($word: String!) {
-        createWord(data: { word: $word }) {
-            data {
-                id
-                attributes {
-                    word
-                    approved
-                }
-            }
-        }
-    }
-`;
-
-export const ADD_QUESTION = gql`
-    mutation addQuestion($question: String!) {
-        createQuestion(data: { question: $question }) {
-            data {
-                id
-                attributes {
-                    question
-                    approved
-                }
-            }
-        }
-    }
-`;
-
-export const DELETE_WORD = gql`
-    mutation deleteWord($id: ID!) {
-        deleteWord(id: $id) {
+export const APPROVE = gql`
+    mutation updateResponse($id: ID!) {
+        updateResponse(id: $id, data: { approved: true }) {
             data {
                 id
             }
@@ -107,11 +55,33 @@ export const DELETE_WORD = gql`
     }
 `;
 
-export const DELETE_QUESTION = gql`
-    mutation deleteQuestion($id: ID!) {
-        deleteQuestion(id: $id) {
+export const DENY = gql`
+    mutation updateResponse($id: ID!) {
+        updateResponse(id: $id, data: { approved: false }) {
             data {
                 id
+            }
+        }
+    }
+`;
+
+export const DELETE = gql`
+    mutation updateResponse($id: ID!) {
+        deleteResponse(id: $id) {
+            data {
+                id
+            }
+        }
+    }
+`;
+
+export const LOGIN = gql`
+    mutation LogIn($username: String!, $password: String!) {
+        login(input: { identifier: $username, password: $password }) {
+            jwt
+            user {
+                id
+                username
             }
         }
     }
