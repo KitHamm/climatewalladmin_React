@@ -212,9 +212,18 @@ function Response(props) {
     const [formState, setFormState] = useState({
         reason: "",
     });
-    const [approveResponse, { data: dataApprove }] = useMutation(APPROVE);
-    const [denyResponse, { data: dataDeny }] = useMutation(DENY);
-    const [deleteResponse, { data: dataDelete }] = useMutation(DELETE);
+    const [
+        approveResponse,
+        { data: dataApprove, loading: loadingApprove, error: errorApprove },
+    ] = useMutation(APPROVE);
+    const [
+        denyResponse,
+        { data: dataDeny, loading: loadingDeny, error: errorDeny },
+    ] = useMutation(DENY);
+    const [
+        deleteResponse,
+        { data: dataDelete, loading: loadingDelete, error: errorDelete },
+    ] = useMutation(DELETE);
     /* eslint-enable no-unused-vars */
     function handleClick(e, type) {
         e.preventDefault();
@@ -280,7 +289,17 @@ function Response(props) {
     }
     return (
         <>
-            <div className="row fade-in response-card">
+            <div
+                className={
+                    loadingDelete ||
+                    dataDelete ||
+                    loadingDeny ||
+                    dataDeny ||
+                    loadingApprove ||
+                    dataApprove
+                        ? "row fade-out mb-2 response-card"
+                        : "row fade-in mb-2 response-card"
+                }>
                 <div className="col-12">
                     <strong>Question: </strong>
                     {props.question}
@@ -333,74 +352,84 @@ function Response(props) {
                 </div>
             </div>
             <dialog className="fade-in" id="deny-modal">
-                <div className="">
-                    <div className="text-center">
-                        <h4>Please choose a reason</h4>
+                {loadingDeny || dataDeny ? (
+                    <div className="fade-in row">
+                        <div className="col-12">
+                            <span className="loader m-5"></span>
+                        </div>
                     </div>
-                    <div className="mt-3">
-                        <button
-                            onClick={(e) => {
-                                modalClick(e, 1);
-                            }}
-                            className="btn btn-climate">
-                            Inappropriate Language
-                        </button>
-                    </div>
-                    <div className="mt-3">
-                        <button
-                            onClick={(e) => {
-                                modalClick(e, 2);
-                            }}
-                            className="btn btn-climate">
-                            Extremest nature of the content
-                        </button>
-                    </div>
-                    <div className="mt-3">
-                        <button
-                            onClick={(e) => {
-                                modalClick(e, 3);
-                            }}
-                            className="btn btn-climate">
-                            Not appropriate or suitable for this work
-                        </button>
-                    </div>
-                    <div className="mt-3">
-                        <label>Custom Response</label>
-                        <input
-                            onChange={(e) =>
-                                setFormState({
-                                    ...formState,
-                                    reason: e.target.value,
-                                })
-                            }
-                            value={formState.reason}
-                            type="text"
-                        />
-                    </div>
-                    <div className="col mt-3 text-start">
-                        {formState.reason !== "" ? (
+                ) : (
+                    <>
+                        <div className="text-center">
+                            <h4>Please choose a reason</h4>
+                        </div>
+                        <div className="mt-3">
                             <button
                                 onClick={(e) => {
-                                    modalClick(e, 4);
+                                    modalClick(e, 1);
                                 }}
-                                className="btn fade-in btn-climate">
-                                Submit
+                                className="btn btn-climate">
+                                Inappropriate Language
                             </button>
-                        ) : (
-                            ""
-                        )}
-                        <button
-                            style={{ float: "inline-end" }}
-                            onClick={(e) => {
-                                e.preventDefault();
-                                document.getElementById("deny-modal").close();
-                                document.body.style.overflow = "auto";
-                            }}
-                            className="btn btn-climate">
-                            Close
-                        </button>
-                    </div>
-                </div>
+                        </div>
+                        <div className="mt-3">
+                            <button
+                                onClick={(e) => {
+                                    modalClick(e, 2);
+                                }}
+                                className="btn btn-climate">
+                                Extremest nature of the content
+                            </button>
+                        </div>
+                        <div className="mt-3">
+                            <button
+                                onClick={(e) => {
+                                    modalClick(e, 3);
+                                }}
+                                className="btn btn-climate">
+                                Not appropriate or suitable for this work
+                            </button>
+                        </div>
+                        <div className="mt-3">
+                            <label>Custom Response</label>
+                            <input
+                                onChange={(e) =>
+                                    setFormState({
+                                        ...formState,
+                                        reason: e.target.value,
+                                    })
+                                }
+                                value={formState.reason}
+                                type="text"
+                            />
+                        </div>
+                        <div className="col mt-3 text-start">
+                            {formState.reason !== "" ? (
+                                <button
+                                    onClick={(e) => {
+                                        modalClick(e, 4);
+                                    }}
+                                    className="btn fade-in btn-climate">
+                                    Submit
+                                </button>
+                            ) : (
+                                ""
+                            )}
+                            <button
+                                style={{ float: "inline-end" }}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    document
+                                        .getElementById("deny-modal")
+                                        .close();
+                                    document.body.style.overflow = "auto";
+                                }}
+                                className="btn btn-climate">
+                                Close
+                            </button>
+                        </div>
+                    </>
+                )}
             </dialog>
         </>
     );

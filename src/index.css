@@ -29,7 +29,7 @@ input[type="password"] {
 .response-card {
     background-color: darkgrey;
     padding: 0.5rem;
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     box-shadow: 12.5px 12.5px 10px rgba(0, 0, 0, 0.025),
         100px 100px 80px rgba(0, 0, 0, 0.05);
 }
@@ -101,5 +101,94 @@ dialog::backdrop {
     }
     100% {
         opacity: 1;
+    }
+}
+
+.fade-out {
+    animation: fadeOut ease 0.33s;
+    -webkit-animation: fadeOut ease 0.33s;
+    -moz-animation: fadeOut ease 0.33s;
+    -o-animation: fadeOut ease 0.33s;
+    -ms-animation: fadeOut ease 0.33s;
+    animation-fill-mode: forwards;
+}
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@-moz-keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@-webkit-keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@-o-keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@-ms-keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 3px solid #000000;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+.response-text {
+    font-size: 12pt;
+}
+.loader::after {
+    content: "";
+    box-sizing: border-box;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid;
+    border-color: rgb(0, 220, 160) transparent;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
     }
 }
