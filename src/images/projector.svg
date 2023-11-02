@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 -508.741 320 1076.741" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="paint0_linear_2_77" x1="160" y1="568" x2="160" y2="428" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#003C3C"/>
+      <stop offset="0.9" stop-color="#003C3C" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#003C3C" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="paint1_linear_2_77" x1="364.326" y1="285.185" x2="174.133" y2="511.852" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#99F1DB" stop-opacity="0.1"/>
+      <stop offset="0.1" stop-color="#99F1DB" stop-opacity="0.1"/>
+      <stop offset="0.3" stop-color="#99F1DB" stop-opacity="0.2"/>
+      <stop offset="0.4" stop-color="#99F1DB" stop-opacity="0.3"/>
+      <stop offset="0.6" stop-color="#99F1DB" stop-opacity="0.4"/>
+      <stop offset="0.8" stop-color="#99F1DB" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#99F1DB" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="paint2_linear_2_77" x1="145.926" y1="511.881" x2="-44.3259" y2="285.185" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#99F1DB" stop-opacity="0.8"/>
+      <stop offset="0.2" stop-color="#99F1DB" stop-opacity="0.6"/>
+      <stop offset="0.4" stop-color="#99F1DB" stop-opacity="0.4"/>
+      <stop offset="0.6" stop-color="#99F1DB" stop-opacity="0.3"/>
+      <stop offset="0.7" stop-color="#99F1DB" stop-opacity="0.2"/>
+      <stop offset="0.9" stop-color="#99F1DB" stop-opacity="0.1"/>
+      <stop offset="1" stop-color="#99F1DB" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="gradient-1" x1="364.326" y1="285.185" x2="174.133" y2="511.852" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1, 0, 0, -1, -0.000575, -0.000222)">
+      <stop stop-color="#99F1DB" stop-opacity="0.1"/>
+      <stop offset="0.1" stop-color="#99F1DB" stop-opacity="0.1"/>
+      <stop offset="0.3" stop-color="#99F1DB" stop-opacity="0.2"/>
+      <stop offset="0.4" stop-color="#99F1DB" stop-opacity="0.3"/>
+      <stop offset="0.6" stop-color="#99F1DB" stop-opacity="0.4"/>
+      <stop offset="0.8" stop-color="#99F1DB" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#99F1DB" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="gradient-2" x1="145.926" y1="511.881" x2="-44.3259" y2="285.185" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1, 0, 0, -1, -0.000575, -0.000222)">
+      <stop stop-color="#99F1DB" stop-opacity="0.8"/>
+      <stop offset="0.2" stop-color="#99F1DB" stop-opacity="0.6"/>
+      <stop offset="0.4" stop-color="#99F1DB" stop-opacity="0.4"/>
+      <stop offset="0.6" stop-color="#99F1DB" stop-opacity="0.3"/>
+      <stop offset="0.7" stop-color="#99F1DB" stop-opacity="0.2"/>
+      <stop offset="0.9" stop-color="#99F1DB" stop-opacity="0.1"/>
+      <stop offset="1" stop-color="#99F1DB" stop-opacity="0.1"/>
+    </linearGradient>
+  </defs>
+  <path d="M320 428H0V568H320V428Z" fill="url(#paint0_linear_2_77)"/>
+  <path d="M194.133 550.222H123.022L136.296 508.741H183.704L194.133 550.222Z" fill="#007D69"/>
+  <path d="M194.37 550.222H123.022V568H194.37V550.222Z" fill="#005E4F"/>
+  <path d="M170.43 508.741L320 248V428L170.43 508.741Z" fill="url(#paint1_linear_2_77)" fill-opacity="0.1"/>
+  <path d="M149.689 508.741L0 248V428L149.689 508.741Z" fill="url(#paint2_linear_2_77)" fill-opacity="0.1"/>
+  <path d="M170.43 508.741L320 248H0L149.689 508.741H170.43Z" fill="white" fill-opacity="0.1"/>
+  <rect width="320" height="248" fill="white" fill-opacity="0.1"/>
+  <path d="M 170.43 -508.741 L 320 -248 L 320 -428 L 170.43 -508.741 Z" fill="url(#gradient-1)" fill-opacity="0.1" style=""/>
+  <path d="M 149.689 -508.741 L 0 -248 L 0 -428 L 149.689 -508.741 Z" fill="url(#gradient-2)" fill-opacity="0.1" style=""/>
+  <path d="M 170.43 -508.741 L 320 -248 L 0 -248 L 149.689 -508.741 L 170.43 -508.741 Z" fill="white" fill-opacity="0.1" style=""/>
+  <rect width="320" height="248" fill="white" fill-opacity="0.1" style="" transform="matrix(1, 0, 0, -1, 0, 0)"/>
+</svg>

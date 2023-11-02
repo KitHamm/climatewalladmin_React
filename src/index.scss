@@ -1,0 +1,379 @@
+@import "/src/sass/fonts.scss";
+
+$cwGreen: #00dca5;
+$bgGreen: #007d69;
+$cwRed: #ff8f8a;
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+        "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+        "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: rgb(15, 140, 110) !important;
+    background-image: url("images/clouds2.png"), url("images/background.png");
+    background-size: 100%, cover;
+    background-position: top, bottom;
+    background-repeat: no-repeat, repeat-y;
+    color: white !important;
+}
+.container {
+    max-width: 90% !important;
+}
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+        monospace;
+}
+
+input[type="text"],
+input[type="password"] {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: inline-block;
+    margin: 8px 0;
+    padding: 12px 20px;
+    resize: none;
+    width: 100%;
+    height: -webkit-fill-available;
+}
+.response-card {
+    color: white !important;
+    background-color: $bgGreen;
+    padding: 1rem 1rem 0.5rem 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 12.5px 12.5px 10px rgba(0, 0, 0, 0.025),
+        100px 100px 80px rgba(0, 0, 0, 0.05);
+}
+dialog {
+    top: 0;
+    bottom: 0;
+    border: none !important;
+    border-radius: 1rem;
+    box-shadow: 0 0 #0000, 0 0 #0000, 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    padding: 1.6rem;
+    max-width: 90vw;
+}
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.arrow {
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    margin-left: 0.5rem;
+    padding: 3px;
+    height: auto;
+    transition: all 0.33s ease-in-out;
+    position: relative;
+    transform-origin: center;
+}
+.up {
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+    margin-bottom: 1px;
+}
+.down {
+    transform: rotate(-315deg);
+    -webkit-transform: rotate(-315deg);
+    margin-bottom: 5px;
+}
+//.btn-climate {
+//    background-color: rgb(0, 220, 160) !important;
+//    border-radius: 0rem !important;
+//    color: white !important;
+//    box-shadow: 12.5px 12.5px 10px rgba(0, 0, 0, 0.025),
+//        100px 100px 80px rgba(0, 0, 0, 0.05);
+//}
+.btn-climate {
+    font-size: 12pt !important;
+    padding-left: 15px !important;
+    padding-right: 12px !important;
+    padding-top: 5px !important;
+    padding-bottom: 3px !important;
+    font-family: "Outfit" !important;
+    font-weight: 400 !important;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    background-color: $cwGreen !important;
+    color: black;
+    border-radius: 2rem !important;
+    box-shadow: 12.5px 12.5px 10px rgba(0, 0, 0, 0.025),
+        100px 100px 80px rgba(0, 0, 0, 0.05);
+}
+.btn-climate-red {
+    font-size: 12pt !important;
+    padding-left: 15px !important;
+    padding-right: 12px !important;
+    padding-top: 5px !important;
+    padding-bottom: 3px !important;
+    font-family: "Outfit" !important;
+    font-weight: 400 !important;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    background-color: $cwRed !important;
+    color: black;
+    border-radius: 2rem !important;
+    box-shadow: 12.5px 12.5px 10px rgba(0, 0, 0, 0.025),
+        100px 100px 80px rgba(0, 0, 0, 0.05);
+}
+.btn:disabled {
+    font-size: 12pt !important;
+    padding-left: 15px !important;
+    padding-right: 12px !important;
+    padding-top: 5px !important;
+    padding-bottom: 3px !important;
+    font-family: "Outfit" !important;
+    font-weight: 400 !important;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    background-color: rgb(173, 173, 173) !important;
+    color: black;
+    border-radius: 2rem !important;
+    border: none;
+    box-shadow: 12.5px 12.5px 10px rgba(0, 0, 0, 0.025),
+        100px 100px 80px rgba(0, 0, 0, 0.05);
+}
+.cw-line {
+    margin: 2rem 0 !important;
+    color: $cwGreen;
+    opacity: 1 !important;
+    border-top: 2px solid;
+}
+.cw-response-info-text {
+    font-family: "Outfit";
+    font-weight: 200;
+    font-size: 16pt;
+}
+.cw-response-text {
+    font-family: "Outfit";
+    font-weight: 200;
+    font-size: 15pt;
+}
+.cw-response-info-bold {
+    font-family: "Outfit";
+    font-weight: 600;
+    font-size: 17pt;
+}
+.cw-response-info-green {
+    display: inline-block;
+    font-family: "Outfit";
+    font-weight: 600;
+    font-size: 17pt;
+    color: $cwGreen;
+}
+.cw-response-info-red {
+    display: inline-block;
+    font-family: "Outfit";
+    font-weight: 600;
+    font-size: 17pt;
+    color: $cwRed;
+}
+.cw-line {
+    margin: 2rem 0 !important;
+    color: $cwGreen;
+    opacity: 1 !important;
+    border-top: 2px solid;
+}
+.cw-title-green {
+    font-family: "Outfit";
+    font-weight: 700;
+    font-size: 20pt;
+    color: $cwGreen;
+}
+.cw-question {
+    margin-left: 5%;
+    margin-right: 5%;
+    font-family: "Outfit";
+    font-weight: 700;
+    font-size: 17pt;
+    color: white;
+}
+.cw-response-info {
+    font-family: "Outfit";
+    font-weight: 600;
+    font-size: 16pt;
+    color: $cwGreen;
+}
+.cw-title {
+    font-family: "Outfit";
+    font-weight: 700;
+    font-size: 30pt;
+}
+.cw-sub {
+    font-family: "Outfit";
+    font-weight: 300;
+    color: $cwGreen;
+}
+.cw-terms {
+    font-family: "Outfit";
+    font-size: 14pt;
+    font-weight: 300;
+}
+.cw-terms-bold {
+    font-family: "Outfit";
+    font-size: 14pt;
+    font-weight: 600;
+}
+.cw-sub-terms {
+    font-family: "Outfit";
+    font-size: 18pt;
+    font-weight: 600;
+    color: black;
+}
+.cw-sub-white {
+    font-family: "Outfit";
+    font-weight: 300;
+    color: white;
+}
+.approved-container {
+    width: 100%;
+    transition: all 0.33s ease-in-out;
+    overflow: hidden;
+}
+.denied-container {
+    width: 100%;
+    transition: all 0.33s ease-in-out;
+    overflow: hidden;
+}
+.fade-in {
+    animation: fadeIn ease 0.33s;
+    -webkit-animation: fadeIn ease 0.33s;
+    -moz-animation: fadeIn ease 0.33s;
+    -o-animation: fadeIn ease 0.33s;
+    -ms-animation: fadeIn ease 0.33s;
+}
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1 !important;
+    }
+}
+
+@-moz-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-o-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-ms-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.fade-out {
+    animation: fadeOut ease 0.33s;
+    -webkit-animation: fadeOut ease 0.33s;
+    -moz-animation: fadeOut ease 0.33s;
+    -o-animation: fadeOut ease 0.33s;
+    -ms-animation: fadeOut ease 0.33s;
+    animation-fill-mode: forwards;
+}
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@-moz-keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@-webkit-keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@-o-keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@-ms-keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 3px solid #000000;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+.response-text {
+    font-size: 12pt;
+}
+.loader::after {
+    content: "";
+    box-sizing: border-box;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid;
+    border-color: rgb(0, 220, 160) transparent;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

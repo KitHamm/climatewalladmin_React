@@ -34,7 +34,10 @@ export const GET_DENIED = gql`
 
 export const GET_AWAITING = gql`
     query responses {
-        responses(filters: { approved: { eq: null } }) {
+        responses(
+            filters: { approved: { eq: null } }
+            sort: ["createdAt:asc"]
+        ) {
             data {
                 id
                 attributes {

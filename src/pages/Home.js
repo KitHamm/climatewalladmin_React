@@ -11,10 +11,8 @@ import {
 import Login from "../components/Login";
 import { useQuery, useMutation } from "@apollo/client";
 export const loggedInContext = createContext();
-
 export default function Home() {
     const [loggedIn, setLoggedIn] = useState(false);
-
     useEffect(() => {
         if (cookies.get("jwt")) {
             setLoggedIn(true);
@@ -35,7 +33,7 @@ export default function Home() {
         <div className="container">
             <div className="row text-center mt-5">
                 <div className="col-12">
-                    <h1>Responses</h1>
+                    <div className="cw-title">#ClimateWall</div>
                 </div>
             </div>
             <Awaiting />
@@ -44,7 +42,6 @@ export default function Home() {
         </div>
     );
 }
-
 function Awaiting() {
     const { loading, error, data } = useQuery(GET_AWAITING, {
         pollInterval: 1000,
@@ -52,9 +49,9 @@ function Awaiting() {
     if (loading)
         return (
             <>
-                <div className="row mt-4">
+                <div className="row mt-4 mb-4">
                     <div className="col-12">
-                        <h4>Awaiting Approval</h4>
+                        <div className="cw-title-green">Awaiting Approval</div>
                     </div>
                 </div>
                 <Empty text="Loading..." />
@@ -63,9 +60,9 @@ function Awaiting() {
     if (error)
         return (
             <>
-                <div className="row mt-4">
+                <div className="row mt-4 mb-4">
                     <div className="col-12">
-                        <h4>Awaiting Approval</h4>
+                        <div className="cw-title-green">Awaiting Approval</div>
                     </div>
                 </div>
                 <Empty text="Error." />
@@ -74,16 +71,21 @@ function Awaiting() {
     if (data) {
         return (
             <>
-                <div className="row mt-4">
+                <div className="row mt-4 mb-4">
                     <div className="col-12">
-                        <h4>Awaiting Approval</h4>
+                        <div className="cw-title-green">
+                            Awaiting Approval ({data.responses.data.length})
+                        </div>
                     </div>
                 </div>
+                <hr className="cw-line" />
+
                 {data.responses.data.length > 0 ? (
                     data.responses.data.map((response, index) => {
                         return (
                             <Response
                                 type="awaiting"
+                                index={index}
                                 question={response.attributes.question}
                                 response={response.attributes.response}
                                 key={response.attributes.response}
@@ -98,7 +100,6 @@ function Awaiting() {
         );
     }
 }
-
 function Approved() {
     const { loading, error, data } = useQuery(GET_APPROVED, {
         pollInterval: 1000,
@@ -106,9 +107,9 @@ function Approved() {
     if (loading)
         return (
             <>
-                <div className="row mt-4">
+                <div className="row mt-4 mb-4">
                     <div className="col-12">
-                        <h4>Approved</h4>
+                        <div className="cw-title-green">Approved</div>
                     </div>
                 </div>
                 <Empty text="Loading..." />
@@ -117,9 +118,9 @@ function Approved() {
     if (error)
         return (
             <>
-                <div className="row mt-4">
+                <div className="row mt-4 mb-4">
                     <div className="col-12">
-                        <h4>Approved</h4>
+                        <div className="cw-title-green">Approved</div>
                     </div>
                 </div>
                 <Empty text="Error." />
@@ -128,31 +129,65 @@ function Approved() {
     if (data) {
         return (
             <>
-                <div className="row mt-4">
+                <div className="col-12 mt-5 mb-4">
                     <div className="col-12">
-                        <h4>Approved</h4>
+                        <div
+                            style={{ cursor: "pointer" }}
+                            className="cw-title-green"
+                            onClick={() => {
+                                var arrow =
+                                    document.getElementById("arrow-approved");
+                                var el =
+                                    document.getElementById(
+                                        "approved-container"
+                                    );
+                                arrow.classList.contains("down")
+                                    ? arrow.classList.replace("down", "up")
+                                    : arrow.classList.replace("up", "down");
+                                el.classList.contains("fade-out")
+                                    ? el.classList.replace(
+                                          "fade-out",
+                                          "fade-in"
+                                      )
+                                    : el.classList.replace(
+                                          "fade-in",
+                                          "fade-out"
+                                      );
+                                el.style.maxHeight === "0px"
+                                    ? (el.style.maxHeight =
+                                          el.scrollHeight + "px")
+                                    : (el.style.maxHeight = "0px");
+                            }}>
+                            Approved ({data.responses.data.length})
+                            <span id="arrow-approved" className="arrow down" />
+                        </div>
                     </div>
                 </div>
-                {data.responses.data.length > 0 ? (
-                    data.responses.data.map((response, index) => {
-                        return (
-                            <Response
-                                type="approved"
-                                question={response.attributes.question}
-                                response={response.attributes.response}
-                                key={response.attributes.response}
-                                id={response.id}
-                            />
-                        );
-                    })
-                ) : (
-                    <Empty text="Nothing to show." />
-                )}
+                <hr className="cw-line" />
+                <div
+                    className="approved-container fade-out"
+                    id="approved-container"
+                    style={{ maxHeight: "0px" }}>
+                    {data.responses.data.length > 0 ? (
+                        data.responses.data.map((response, index) => {
+                            return (
+                                <Response
+                                    type="approved"
+                                    question={response.attributes.question}
+                                    response={response.attributes.response}
+                                    key={response.attributes.response}
+                                    id={response.id}
+                                />
+                            );
+                        })
+                    ) : (
+                        <Empty text="Nothing to show." />
+                    )}
+                </div>
             </>
         );
     }
 }
-
 function Denied() {
     const { loading, error, data } = useQuery(GET_DENIED, {
         pollInterval: 1000,
@@ -160,9 +195,9 @@ function Denied() {
     if (loading)
         return (
             <>
-                <div className="row mt-4">
+                <div className="row mt-4 mb-4">
                     <div className="col-12">
-                        <h4>Denied</h4>
+                        <div className="cw-title-green">Denied</div>
                     </div>
                 </div>
                 <Empty text="Loading..." />
@@ -171,9 +206,9 @@ function Denied() {
     if (error)
         return (
             <>
-                <div className="row mt-4">
+                <div className="row mt-4 mb-4">
                     <div className="col-12">
-                        <h4>Denied</h4>
+                        <div className="cw-title-green">Denied</div>
                     </div>
                 </div>
                 <Empty text="Error." />
@@ -182,31 +217,63 @@ function Denied() {
     if (data) {
         return (
             <>
-                <div className="row mt-4">
+                <div className="col-12 mt-4 mb-4">
                     <div className="col-12">
-                        <h4>Denied</h4>
+                        <div
+                            style={{ cursor: "pointer" }}
+                            className="cw-title-green"
+                            onClick={() => {
+                                var arrow =
+                                    document.getElementById("arrow-denied");
+                                var el =
+                                    document.getElementById("denied-container");
+                                arrow.classList.contains("down")
+                                    ? arrow.classList.replace("down", "up")
+                                    : arrow.classList.replace("up", "down");
+                                el.classList.contains("fade-out")
+                                    ? el.classList.replace(
+                                          "fade-out",
+                                          "fade-in"
+                                      )
+                                    : el.classList.replace(
+                                          "fade-in",
+                                          "fade-out"
+                                      );
+                                el.style.maxHeight === "0px"
+                                    ? (el.style.maxHeight =
+                                          el.scrollHeight + "px")
+                                    : (el.style.maxHeight = "0px");
+                            }}>
+                            Denied ({data.responses.data.length}){" "}
+                            <span id="arrow-denied" className="arrow down" />
+                        </div>
                     </div>
                 </div>
-                {data.responses.data.length > 0 ? (
-                    data.responses.data.map((response, index) => {
-                        return (
-                            <Response
-                                type="denied"
-                                question={response.attributes.question}
-                                response={response.attributes.response}
-                                key={response.attributes.response}
-                                id={response.id}
-                            />
-                        );
-                    })
-                ) : (
-                    <Empty text="Nothing to show." />
-                )}
+                <hr className="cw-line" />
+                <div
+                    className="denied-container fade-out"
+                    id="denied-container"
+                    style={{ maxHeight: "0px" }}>
+                    {data.responses.data.length > 0 ? (
+                        data.responses.data.map((response, index) => {
+                            return (
+                                <Response
+                                    type="denied"
+                                    question={response.attributes.question}
+                                    response={response.attributes.response}
+                                    key={response.attributes.response}
+                                    id={response.id}
+                                />
+                            );
+                        })
+                    ) : (
+                        <Empty text="Nothing to show." />
+                    )}
+                </div>
             </>
         );
     }
 }
-
 function Response(props) {
     /* eslint-disable no-unused-vars */
     const [formState, setFormState] = useState({
@@ -297,53 +364,64 @@ function Response(props) {
                     dataDeny ||
                     loadingApprove ||
                     dataApprove
-                        ? "row fade-out mb-2 response-card"
-                        : "row fade-in mb-2 response-card"
+                        ? "col-12 fade-out mb-2 response-card"
+                        : "col-12 fade-in mb-2 response-card"
                 }>
-                <div className="col-12">
+                <div className="col-12 cw-response-info-bold">
                     <strong>Question: </strong>
+                </div>
+                <div className="col-12 cw-response-text mb-2">
                     {props.question}
                 </div>
-                <div className="col-12">
+                <div className="col-12 cw-response-info-bold">
                     <strong>Response: </strong>
+                </div>
+                <div className="col-12 cw-response-text mb-4">
                     {props.response}
                 </div>
-                <div className="col-12">
+                <div className="col-12 text-end mb-3">
                     {props.type !== "awaiting" && props.type !== "approved" ? (
-                        <div className="ms-2" style={{ float: "inline-end" }}>
+                        <div
+                            className="ms-2"
+                            style={{ display: "inline-block" }}>
                             <button
                                 onClick={(e) => {
                                     handleClick(e, "delete");
                                 }}
-                                className="btn btn-climate">
+                                className="btn btn-climate-red">
                                 Delete
                             </button>
                         </div>
                     ) : (
                         ""
                     )}
-
                     {props.type === "awaiting" ? (
-                        <div className="ms-2" style={{ float: "inline-end" }}>
+                        <div
+                            className="ms-2"
+                            style={{ display: "inline-block" }}>
                             <button
+                                disabled={props.index === 0 ? false : true}
                                 onClick={(e) => {
-                                    handleClick(e, "deny");
+                                    handleClick(e, "approve");
                                 }}
                                 className="btn btn-climate">
-                                Deny
+                                Approve
                             </button>
                         </div>
                     ) : (
                         ""
                     )}
                     {props.type === "awaiting" ? (
-                        <div className="ms-2" style={{ float: "inline-end" }}>
+                        <div
+                            className="ms-2"
+                            style={{ display: "inline-block" }}>
                             <button
+                                disabled={props.index === 0 ? false : true}
                                 onClick={(e) => {
-                                    handleClick(e, "approve");
+                                    handleClick(e, "deny");
                                 }}
-                                className="btn btn-climate">
-                                Approve
+                                className="btn btn-climate-red">
+                                Deny
                             </button>
                         </div>
                     ) : (
@@ -434,11 +512,12 @@ function Response(props) {
         </>
     );
 }
-
 function Empty(props) {
     return (
         <div className="row fade-in response-card">
-            <div className="col-12 mb-3">{props.text}</div>
+            <div className="col-12 mb-3 cw-response-info-text">
+                {props.text}
+            </div>
         </div>
     );
 }
