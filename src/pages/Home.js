@@ -88,7 +88,7 @@ function Awaiting() {
                                 index={index}
                                 question={response.attributes.question}
                                 response={response.attributes.response}
-                                key={response.attributes.response}
+                                key={response.id}
                                 id={response.id}
                             />
                         );
@@ -175,7 +175,7 @@ function Approved() {
                                     type="approved"
                                     question={response.attributes.question}
                                     response={response.attributes.response}
-                                    key={response.attributes.response}
+                                    key={response.id}
                                     id={response.id}
                                 />
                             );
@@ -261,7 +261,7 @@ function Denied() {
                                     type="denied"
                                     question={response.attributes.question}
                                     response={response.attributes.response}
-                                    key={response.attributes.response}
+                                    key={response.id}
                                     id={response.id}
                                 />
                             );
@@ -292,8 +292,9 @@ function Response(props) {
         { data: dataDelete, loading: loadingDelete, error: errorDelete },
     ] = useMutation(DELETE);
     /* eslint-enable no-unused-vars */
-    function handleClick(e, type) {
+    function handleClick(e, type, id) {
         e.preventDefault();
+        document.getElementById(id).classList.add("fade-out");
         switch (type) {
             case "approve":
                 approveResponse({
@@ -317,6 +318,7 @@ function Response(props) {
     }
     function modalClick(e, type) {
         e.preventDefault();
+        document.body.style.overflow = "auto";
         switch (type) {
             case 1:
                 denyResponse({
@@ -356,17 +358,7 @@ function Response(props) {
     }
     return (
         <>
-            <div
-                className={
-                    loadingDelete ||
-                    dataDelete ||
-                    loadingDeny ||
-                    dataDeny ||
-                    loadingApprove ||
-                    dataApprove
-                        ? "col-12 fade-out mb-2 response-card"
-                        : "col-12 fade-in mb-2 response-card"
-                }>
+            <div id={props.id} className="col-12 fade-in mb-2 response-card">
                 <div className="col-12 cw-response-info-bold">
                     <strong>Question: </strong>
                 </div>
@@ -386,7 +378,7 @@ function Response(props) {
                             style={{ display: "inline-block" }}>
                             <button
                                 onClick={(e) => {
-                                    handleClick(e, "delete");
+                                    handleClick(e, "delete", props.id);
                                 }}
                                 className="btn btn-climate-red">
                                 Delete
@@ -402,7 +394,7 @@ function Response(props) {
                             <button
                                 disabled={props.index === 0 ? false : true}
                                 onClick={(e) => {
-                                    handleClick(e, "approve");
+                                    handleClick(e, "approve", props.id);
                                 }}
                                 className="btn btn-climate">
                                 Approve
@@ -418,7 +410,7 @@ function Response(props) {
                             <button
                                 disabled={props.index === 0 ? false : true}
                                 onClick={(e) => {
-                                    handleClick(e, "deny");
+                                    handleClick(e, "deny", props.id);
                                 }}
                                 className="btn btn-climate-red">
                                 Deny

@@ -2,7 +2,10 @@ import { gql } from "@apollo/client";
 
 export const GET_APPROVED = gql`
     query responses {
-        responses(filters: { approved: { eq: true } }) {
+        responses(
+            filters: { approved: { eq: true } }
+            sort: ["updatedAt:desc"]
+        ) {
             data {
                 id
                 attributes {
@@ -18,7 +21,10 @@ export const GET_APPROVED = gql`
 
 export const GET_DENIED = gql`
     query responses {
-        responses(filters: { approved: { eq: false } }) {
+        responses(
+            filters: { approved: { eq: false } }
+            sort: ["updatedAt:desc"]
+        ) {
             data {
                 id
                 attributes {
