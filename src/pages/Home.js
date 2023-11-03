@@ -155,8 +155,9 @@ function Approved() {
                                       );
                                 el.style.maxHeight === "0px"
                                     ? (el.style.maxHeight =
-                                          el.scrollHeight + "px")
+                                          el.scrollHeight + 1000 + "px")
                                     : (el.style.maxHeight = "0px");
+                                console.log(el.scrollHeight);
                             }}>
                             Approved ({data.responses.data.length})
                             <span id="arrow-approved" className="arrow down" />
@@ -241,8 +242,9 @@ function Denied() {
                                       );
                                 el.style.maxHeight === "0px"
                                     ? (el.style.maxHeight =
-                                          el.scrollHeight + "px")
+                                          el.scrollHeight + 1000 + "px")
                                     : (el.style.maxHeight = "0px");
+                                console.log(el.scrollHeight);
                             }}>
                             Denied ({data.responses.data.length}){" "}
                             <span id="arrow-denied" className="arrow down" />
@@ -251,7 +253,7 @@ function Denied() {
                 </div>
                 <hr className="cw-line" />
                 <div
-                    className="denied-container fade-out"
+                    className="denied-container fade-out mb-5"
                     id="denied-container"
                     style={{ maxHeight: "0px" }}>
                     {data.responses.data.length > 0 ? (
@@ -506,7 +508,7 @@ function Response(props) {
 }
 function Empty(props) {
     return (
-        <div className="row fade-in response-card">
+        <div className="col-12 fade-in response-card">
             <div className="col-12 mb-3 cw-response-info-text">
                 {props.text}
             </div>

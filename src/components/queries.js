@@ -4,7 +4,7 @@ export const GET_APPROVED = gql`
     query responses {
         responses(
             filters: { approved: { eq: true } }
-            sort: ["updatedAt:desc"]
+            sort: ["createdAt:desc"]
         ) {
             data {
                 id
@@ -23,7 +23,7 @@ export const GET_DENIED = gql`
     query responses {
         responses(
             filters: { approved: { eq: false } }
-            sort: ["updatedAt:desc"]
+            sort: ["createdAt:desc"]
         ) {
             data {
                 id
