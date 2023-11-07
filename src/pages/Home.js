@@ -178,6 +178,7 @@ function Approved() {
                                     response={response.attributes.response}
                                     key={response.id}
                                     id={response.id}
+                                    user={response.attributes.approvedBy}
                                 />
                             );
                         })
@@ -266,6 +267,7 @@ function Denied() {
                                     key={response.id}
                                     id={response.id}
                                     reason={response.attributes.reason}
+                                    user={response.attributes.approvedBy}
                                 />
                             );
                         })
@@ -305,6 +307,7 @@ function Response(props) {
                 approveResponse({
                     variables: {
                         id: props.id,
+                        user: cookies.get("user"),
                         reason: "Your response has been approved and should appear on the wall shortly.",
                     },
                 });
@@ -329,6 +332,7 @@ function Response(props) {
                 denyResponse({
                     variables: {
                         id: props.id,
+                        user: cookies.get("user"),
                         reason: "Your response has not been approved due to the use of inappropriate language.",
                     },
                 });
@@ -337,6 +341,7 @@ function Response(props) {
                 denyResponse({
                     variables: {
                         id: props.id,
+                        user: cookies.get("user"),
                         reason: "Your response has not been approved due to the extremist nature of the content.",
                     },
                 });
@@ -345,6 +350,7 @@ function Response(props) {
                 denyResponse({
                     variables: {
                         id: props.id,
+                        user: cookies.get("user"),
                         reason: "Your response has not been approved as it is not appropriate or suitable for this work.",
                     },
                 });
@@ -353,6 +359,7 @@ function Response(props) {
                 denyResponse({
                     variables: {
                         id: props.id,
+                        user: cookies.get("user"),
                         reason: formState.reason,
                     },
                 });
@@ -383,6 +390,21 @@ function Response(props) {
                         </div>
                         <div className="col-12 cw-response-text mb-2">
                             {props.reason}
+                        </div>
+                        <div className="col-12 cw-response-info-bold">
+                            <strong>Denied by: </strong>
+                        </div>
+                        <div className="col-12 cw-response-text mb-2">
+                            {props.user}
+                        </div>
+                    </>
+                ) : props.type === "approved" ? (
+                    <>
+                        <div className="col-12 cw-response-info-bold">
+                            <strong>Approved by: </strong>
+                        </div>
+                        <div className="col-12 cw-response-text mb-2">
+                            {props.user}
                         </div>
                     </>
                 ) : (

@@ -13,6 +13,7 @@ export const GET_APPROVED = gql`
                     createdAt
                     approved
                     question
+                    approvedBy
                 }
             }
         }
@@ -33,6 +34,7 @@ export const GET_DENIED = gql`
                     approved
                     question
                     reason
+                    approvedBy
                 }
             }
         }
@@ -59,8 +61,11 @@ export const GET_AWAITING = gql`
 `;
 
 export const APPROVE = gql`
-    mutation updateResponse($id: ID!, $reason: String) {
-        updateResponse(id: $id, data: { approved: true, reason: $reason }) {
+    mutation updateResponse($id: ID!, $reason: String, $user: String) {
+        updateResponse(
+            id: $id
+            data: { approved: true, reason: $reason, approvedBy: $user }
+        ) {
             data {
                 id
             }
@@ -69,8 +74,11 @@ export const APPROVE = gql`
 `;
 
 export const DENY = gql`
-    mutation updateResponse($id: ID!, $reason: String) {
-        updateResponse(id: $id, data: { approved: false, reason: $reason }) {
+    mutation updateResponse($id: ID!, $reason: String, $user: String) {
+        updateResponse(
+            id: $id
+            data: { approved: false, reason: $reason, approvedBy: $user }
+        ) {
             data {
                 id
             }

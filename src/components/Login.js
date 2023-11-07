@@ -29,10 +29,14 @@ export default function Login() {
                 maxAge: 21600,
                 path: "/climatewalladmin",
             });
+            cookies.set("user", formState.username, {
+                maxAge: 21600,
+                path: "/climatewalladmin",
+            });
             setToken(data.login.jwt);
             setLoggedIn(true);
         }
-    }, [data, setToken, setLoggedIn]);
+    }, [data, setToken, setLoggedIn, formState.username]);
     return (
         <>
             <div className="container">
