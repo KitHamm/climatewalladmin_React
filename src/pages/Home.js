@@ -34,6 +34,21 @@ export default function Home() {
             <div className="row text-center mt-5">
                 <div className="col-12">
                     <div className="cw-title">#ClimateWall</div>
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            cookies.remove("jwt", {
+                                path: "/climatewalladmin",
+                            });
+                            cookies.remove("user", {
+                                path: "/climatewalladmin",
+                            });
+                            setLoggedIn(false);
+                            window.location.reload();
+                        }}
+                        className="btn btn-climate-red">
+                        Log Out
+                    </button>
                 </div>
             </div>
             <Awaiting />
@@ -157,7 +172,6 @@ function Approved() {
                                     ? (el.style.maxHeight =
                                           el.scrollHeight + 1000 + "px")
                                     : (el.style.maxHeight = "0px");
-                                console.log(el.scrollHeight);
                             }}>
                             Approved ({data.responses.data.length})
                             <span id="arrow-approved" className="arrow down" />
@@ -245,7 +259,6 @@ function Denied() {
                                     ? (el.style.maxHeight =
                                           el.scrollHeight + 1000 + "px")
                                     : (el.style.maxHeight = "0px");
-                                console.log(el.scrollHeight);
                             }}>
                             Denied ({data.responses.data.length}){" "}
                             <span id="arrow-denied" className="arrow down" />

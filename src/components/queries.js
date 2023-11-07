@@ -107,3 +107,15 @@ export const LOGIN = gql`
         }
     }
 `;
+
+export const FULL_NAME = gql`
+    query fullName($id: ID) {
+        usersPermissionsUser(id: $id) {
+            data {
+                attributes {
+                    fullName
+                }
+            }
+        }
+    }
+`;

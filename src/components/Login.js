@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { cookies } from "../App";
-import { LOGIN } from "./queries";
-import { useMutation } from "@apollo/client";
+import { LOGIN, FULL_NAME } from "./queries";
+import { useMutation, useQuery } from "@apollo/client";
 import { loggedInContext } from "../pages/Home";
 import { tokenContext } from "../App";
 
@@ -16,27 +16,36 @@ export default function Login() {
     });
     const [login, { data }] = useMutation(LOGIN, {
         variables: {
-            username: formState.username.toLowerCase(),
+            username: formState.username.replace(" ", "").toLowerCase(),
             password: formState.password.toLowerCase(),
         },
+    });
+    const userId = data?.login?.user?.id;
+    const { data: fullNameData } = useQuery(FULL_NAME, {
+        skip: !userId,
+        variables: { id: userId },
     });
     function handleSubmit() {
         login();
     }
     useEffect(() => {
-        if (data) {
+        if (fullNameData !== undefined) {
             cookies.set("jwt", data.login.jwt, {
                 maxAge: 21600,
                 path: "/climatewalladmin",
             });
-            cookies.set("user", formState.username, {
-                maxAge: 21600,
-                path: "/climatewalladmin",
-            });
+            cookies.set(
+                "user",
+                fullNameData.usersPermissionsUser.data.attributes.fullName,
+                {
+                    maxAge: 21600,
+                    path: "/climatewalladmin",
+                }
+            );
             setToken(data.login.jwt);
             setLoggedIn(true);
         }
-    }, [data, setToken, setLoggedIn, formState.username]);
+    }, [data, setToken, setLoggedIn, formState.username, fullNameData]);
     return (
         <>
             <div className="container">
