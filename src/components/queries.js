@@ -114,6 +114,13 @@ export const FULL_NAME = gql`
             data {
                 attributes {
                     fullName
+                    role {
+                        data {
+                            attributes {
+                                name
+                            }
+                        }
+                    }
                 }
             }
         }

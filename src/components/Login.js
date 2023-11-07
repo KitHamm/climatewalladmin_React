@@ -9,6 +9,7 @@ export default function Login() {
     /* eslint-disable no-unused-vars */
     const [loggedIn, setLoggedIn] = useContext(loggedInContext);
     const [token, setToken] = useContext(tokenContext);
+    const [errorText, setErrorText] = useState("");
     /* eslint-enable no-unused-vars */
     const [formState, setFormState] = useState({
         username: "",
@@ -26,24 +27,35 @@ export default function Login() {
         variables: { id: userId },
     });
     function handleSubmit() {
-        login();
+        login().catch((e) => {
+            setErrorText("Incorrect username or password.");
+            setFormState({ username: "", password: "" });
+        });
     }
     useEffect(() => {
         if (fullNameData !== undefined) {
-            cookies.set("jwt", data.login.jwt, {
-                maxAge: 21600,
-                path: "/climatewalladmin",
-            });
-            cookies.set(
-                "user",
-                fullNameData.usersPermissionsUser.data.attributes.fullName,
-                {
+            if (
+                fullNameData.usersPermissionsUser.data.attributes.role.data
+                    .attributes.name === "climatewall"
+            ) {
+                cookies.set("jwt", data.login.jwt, {
                     maxAge: 21600,
                     path: "/climatewalladmin",
-                }
-            );
-            setToken(data.login.jwt);
-            setLoggedIn(true);
+                });
+                cookies.set(
+                    "user",
+                    fullNameData.usersPermissionsUser.data.attributes.fullName,
+                    {
+                        maxAge: 21600,
+                        path: "/climatewalladmin",
+                    }
+                );
+                setToken(data.login.jwt);
+                setLoggedIn(true);
+            } else {
+                setErrorText("Incorrect username or password.");
+                setFormState({ username: "", password: "" });
+            }
         }
     }, [data, setToken, setLoggedIn, formState.username, fullNameData]);
     return (
@@ -56,8 +68,9 @@ export default function Login() {
                                 e.preventDefault();
                                 handleSubmit();
                             }}>
-                            <h3 className="mb-5">Login</h3>
-                            <label>Username</label>
+                            <div className="cw-title-green">Welcome To</div>
+                            <div className="cw-title mb-5">#ClimateWall</div>
+                            <label className="cw-response-info">Username</label>
                             <input
                                 required
                                 value={formState.username}
@@ -70,7 +83,7 @@ export default function Login() {
                                 type="text"
                                 placeholder="Username"
                             />
-                            <label>Password</label>
+                            <label className="cw-response-info">Password</label>
                             <input
                                 required
                                 value={formState.password}
@@ -83,10 +96,13 @@ export default function Login() {
                                 type="password"
                                 placeholder="Password"
                             />
-                            <button className="btn btn-success mt-3">
+                            <button className="btn btn-climate mt-3">
                                 Submit
                             </button>
                         </form>
+                        <div className="mt-5 cw-response-info-text">
+                            {errorText}
+                        </div>
                     </div>
                 </div>
                 <dialog id="forgot">
