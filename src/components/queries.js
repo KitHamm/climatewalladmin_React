@@ -32,6 +32,7 @@ export const GET_DENIED = gql`
                     createdAt
                     approved
                     question
+                    reason
                 }
             }
         }

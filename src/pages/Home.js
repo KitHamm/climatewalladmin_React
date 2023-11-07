@@ -265,6 +265,7 @@ function Denied() {
                                     response={response.attributes.response}
                                     key={response.id}
                                     id={response.id}
+                                    reason={response.attributes.reason}
                                 />
                             );
                         })
@@ -296,7 +297,9 @@ function Response(props) {
     /* eslint-enable no-unused-vars */
     function handleClick(e, type, id) {
         e.preventDefault();
-        document.getElementById(id).classList.add("fade-out");
+        if (type !== "deny") {
+            document.getElementById(id).classList.add("fade-out");
+        }
         switch (type) {
             case "approve":
                 approveResponse({
@@ -334,7 +337,7 @@ function Response(props) {
                 denyResponse({
                     variables: {
                         id: props.id,
-                        reason: "Your response has not been approved due to the extremest nature of the content.",
+                        reason: "Your response has not been approved due to the extremist nature of the content.",
                     },
                 });
                 break;
@@ -370,9 +373,21 @@ function Response(props) {
                 <div className="col-12 cw-response-info-bold">
                     <strong>Response: </strong>
                 </div>
-                <div className="col-12 cw-response-text mb-4">
+                <div className="col-12 cw-response-text mb-3">
                     {props.response}
                 </div>
+                {props.type === "denied" ? (
+                    <>
+                        <div className="col-12 cw-response-info-bold">
+                            <strong>Reason: </strong>
+                        </div>
+                        <div className="col-12 cw-response-text mb-2">
+                            {props.reason}
+                        </div>
+                    </>
+                ) : (
+                    ""
+                )}
                 <div className="col-12 text-end mb-3">
                     {props.type !== "awaiting" && props.type !== "approved" ? (
                         <div
@@ -450,7 +465,7 @@ function Response(props) {
                                     modalClick(e, 2);
                                 }}
                                 className="btn btn-climate">
-                                Extremest nature of the content
+                                Extremist nature of the content
                             </button>
                         </div>
                         <div className="mt-3">
