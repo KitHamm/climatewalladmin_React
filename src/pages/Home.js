@@ -34,6 +34,14 @@ export default function Home() {
             <div className="row text-center mt-5">
                 <div className="col-12">
                     <div className="cw-title">#ClimateWall</div>
+                    <div className="cw-response-info-text mb-3">
+                        Logged In as{" "}
+                        <div
+                            className="cw-response-info-green"
+                            style={{ display: "inline-flex" }}>
+                            {cookies.get("user")}
+                        </div>
+                    </div>
                     <button
                         onClick={(e) => {
                             e.preventDefault();
