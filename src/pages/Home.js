@@ -1,5 +1,6 @@
 import { useEffect, useState, createContext } from "react";
 import { cookies } from "../App";
+import Load from "../images/load.png";
 import {
     GET_APPROVED,
     GET_AWAITING,
@@ -7,11 +8,18 @@ import {
     APPROVE,
     DENY,
     DELETE,
+    QUESTIONS,
+    UPDATE_QUESTION_ORDER,
+    CURRENT_QUESTION,
+    ADD_QUESTION,
+    DELETE_QUESTION,
 } from "../components/queries";
 import Login from "../components/Login";
 import { useQuery, useMutation } from "@apollo/client";
 export const loggedInContext = createContext();
+export const superUserContext = createContext();
 export default function Home() {
+    const [view, setView] = useState(0);
     const [loggedIn, setLoggedIn] = useState(false);
     useEffect(() => {
         if (cookies.get("jwt")) {
@@ -42,29 +50,480 @@ export default function Home() {
                             {cookies.get("user")}
                         </div>
                     </div>
-                    <button
-                        onClick={(e) => {
-                            e.preventDefault();
-                            cookies.remove("jwt", {
-                                path: "/climatewalladmin",
-                            });
-                            cookies.remove("user", {
-                                path: "/climatewalladmin",
-                            });
-                            setLoggedIn(false);
-                            window.location.reload();
-                        }}
-                        className="btn btn-climate-red">
-                        Log Out
-                    </button>
+                    <div>
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                cookies.remove("jwt", {
+                                    path: "/climatewalladmin",
+                                });
+                                cookies.remove("user", {
+                                    path: "/climatewalladmin",
+                                });
+                                cookies.remove("superuser", {
+                                    path: "/climatewalladmin",
+                                });
+                                setLoggedIn(false);
+                                window.location.reload();
+                            }}
+                            className="btn btn-climate-red">
+                            Log Out
+                        </button>
+                    </div>
+                    {cookies.get("superuser") === true && view === 0 ? (
+                        <div>
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setView(1);
+                                }}
+                                className="mt-3 btn btn-climate">
+                                Questions
+                            </button>
+                        </div>
+                    ) : (
+                        ""
+                    )}
                 </div>
             </div>
-            <Awaiting />
-            <Approved />
-            <Denied />
+            {view === 0 ? (
+                <>
+                    <Awaiting />
+                    <Approved />
+                    <Denied />
+                </>
+            ) : (
+                <Questions setView={setView} />
+            )}
         </div>
     );
 }
+
+function AddQuestion(props) {
+    const [isLoading, setIsLoading] = useState(false);
+    const [question, setQuestion] = useState("");
+    const [order, setOrder] = useState(props.amount + 1);
+    const [updateQuestionOrder] = useMutation(UPDATE_QUESTION_ORDER);
+    const [addQuestion, { loading, error, data }] = useMutation(ADD_QUESTION, {
+        variables: { question: question, order: parseInt(order) },
+    });
+    function handleSubmit() {
+        setIsLoading(true);
+        addQuestion()
+            .then(() => {
+                for (let i = 0; i < props.data.questions.data.length; i++) {
+                    if (i > order - 2) {
+                        updateQuestionOrder({
+                            variables: {
+                                id: props.data.questions.data[i].id,
+                                order:
+                                    props.data.questions.data[i].attributes
+                                        .order + 1,
+                            },
+                        });
+                    }
+                }
+            })
+            .then(() => {
+                setTimeout(() => {
+                    setIsLoading(false);
+                    document.getElementById("addQuestion").close();
+                    document.body.style.overflow = null;
+                }, 1000);
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    }
+    return (
+        <dialog
+            style={
+                isLoading
+                    ? { backgroundColor: "black" }
+                    : { backgroundColor: "white" }
+            }
+            id="addQuestion">
+            {isLoading ? (
+                <img className="loader" src={Load} alt="Load" />
+            ) : (
+                <>
+                    <div className="row">
+                        <div className="col-12">
+                            <div className="cw-title">Add Question</div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <form className="row">
+                            <div className="col-12">
+                                <textarea
+                                    value={question}
+                                    onChange={(e) => {
+                                        setQuestion(e.target.value);
+                                    }}
+                                    style={{ width: "75vw" }}
+                                />
+                            </div>
+                            <div className="col-12">
+                                <div className="cw-title">Order</div>
+                            </div>
+                            <div className="col-2">
+                                <input
+                                    onChange={(e) => {
+                                        setOrder(e.target.value);
+                                    }}
+                                    value={order}
+                                    type="number"
+                                />
+                            </div>
+                        </form>
+                    </div>
+                    <div className="row">
+                        <div className="col-12">
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleSubmit();
+                                }}
+                                className="btn btn-climate">
+                                Submit
+                            </button>
+                            <button
+                                style={{ float: "inline-end" }}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    document
+                                        .getElementById("addQuestion")
+                                        .close();
+                                    document.body.style.overflow = null;
+                                }}
+                                className="btn btn-climate-red">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </>
+            )}
+        </dialog>
+    );
+}
+
+function DeleteQuestion(props) {
+    const [loading, setLoading] = useState(false);
+    const [updateQuestionOrder] = useMutation(UPDATE_QUESTION_ORDER);
+    const [deleteQuestion] = useMutation(DELETE_QUESTION, {
+        variables: { id: props.id },
+    });
+    function handleSubmit() {
+        setLoading(true);
+        deleteQuestion()
+            .then(() => {
+                for (let i = 0; i < props.data.questions.data.length; i++) {
+                    if (i > props.order - 1) {
+                        updateQuestionOrder({
+                            variables: {
+                                id: props.data.questions.data[i].id,
+                                order:
+                                    props.data.questions.data[i].attributes
+                                        .order - 1,
+                            },
+                        });
+                    }
+                }
+            })
+            .then(() => {
+                setTimeout(() => {
+                    setLoading(false);
+                    document.getElementById("deleteQuestion").close();
+                    document.body.style.overflow = null;
+                }, 1000);
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    }
+    return (
+        <dialog
+            style={
+                loading
+                    ? { backgroundColor: "black" }
+                    : { backgroundColor: "white" }
+            }
+            id="deleteQuestion">
+            {loading ? (
+                <img className="loader" src={Load} alt="Load" />
+            ) : (
+                <>
+                    <div className="row">
+                        <div className="col-12">
+                            <div className="cw-title">Are you sure?</div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-12">
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleSubmit();
+                                }}
+                                className="btn btn-climate-red">
+                                Delete
+                            </button>
+                            <button
+                                style={{ float: "inline-end" }}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    document
+                                        .getElementById("deleteQuestion")
+                                        .close();
+                                    document.body.style.overflow = null;
+                                }}
+                                className="btn btn-climate-red">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </>
+            )}
+        </dialog>
+    );
+}
+
+function Questions(props) {
+    const [order, setOrder] = useState(0);
+    const [id, setId] = useState(0);
+    const { data } = useQuery(QUESTIONS, {
+        pollInterval: 1000,
+    });
+    const { data: currentQ } = useQuery(CURRENT_QUESTION, {
+        pollInterval: 1000,
+    });
+    if (data && currentQ) {
+        return (
+            <>
+                <div className="row mt-3">
+                    <div className="col-10 offset-1">
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                document
+                                    .getElementById("addQuestion")
+                                    .showModal();
+                                document.body.style.overflow = "hidden";
+                            }}
+                            className="mt-3 btn btn-climate">
+                            Add Question
+                        </button>
+                        <button
+                            style={{ float: "inline-end" }}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                props.setView(0);
+                            }}
+                            className="mt-3 btn btn-climate-red">
+                            Back
+                        </button>
+                    </div>
+                </div>
+                <div className="row mt-3">
+                    <div className="col-10 offset-1 text-center">
+                        <div className="cw-title-green">Questions</div>
+                    </div>
+                </div>
+                {data.questions.data.map((question, index) => {
+                    return (
+                        <Question
+                            setId={setId}
+                            setOrder={setOrder}
+                            current={
+                                currentQ.currentQuestion.data.attributes
+                                    .number ===
+                                question.attributes.order - 1
+                                    ? true
+                                    : false
+                            }
+                            key={index}
+                            question={question}
+                            prevId={
+                                index > 0
+                                    ? data.questions.data[index - 1].id
+                                    : 0
+                            }
+                            nextId={
+                                index < data.questions.data.length - 1
+                                    ? data.questions.data[index + 1].id
+                                    : 0
+                            }
+                            first={index === 0 ? true : false}
+                            last={
+                                index === data.questions.data.length - 1
+                                    ? true
+                                    : false
+                            }
+                        />
+                    );
+                })}
+                <Loader />
+                <AddQuestion data={data} amount={data.questions.data.length} />
+                <DeleteQuestion
+                    order={order}
+                    id={id}
+                    data={data}
+                    amount={data.questions.data.length}
+                />
+            </>
+        );
+    }
+}
+
+function Question(props) {
+    const [updateQuestionOrder] = useMutation(UPDATE_QUESTION_ORDER);
+    const [updateQuestionSwap] = useMutation(UPDATE_QUESTION_ORDER);
+    const [ids, setIds] = useState({ order: "", swap: "" });
+    const [orderDone, setOrderDone] = useState(false);
+    const [swapDone, setSwapDone] = useState(false);
+    function handleClick(id, swapId, order, swapOrder) {
+        document.getElementById(id).classList.replace("fade-in", "fade-out");
+        document
+            .getElementById(swapId)
+            .classList.replace("fade-in", "fade-out");
+        setIds({ order: id, swap: swapId });
+        document.getElementById("loader-dialog").showModal();
+        document.body.style.overflow = "hidden";
+        updateQuestionOrder({ variables: { id: id, order: swapOrder } })
+            .then(() => {
+                setOrderDone(true);
+                updateQuestionSwap({
+                    variables: { id: swapId, order: order },
+                }).catch((e) => console.log(e));
+            })
+            .then((v) => setSwapDone(true))
+            .catch((e) => console.log(e));
+    }
+    useEffect(() => {
+        if (orderDone && swapDone) {
+            setTimeout(() => {
+                document
+                    .getElementById(ids.order)
+                    .classList.replace("fade-out", "fade-in");
+                document
+                    .getElementById(ids.swap)
+                    .classList.replace("fade-out", "fade-in");
+                document.getElementById("loader-dialog").close();
+                document.body.style.overflow = null;
+                setOrderDone(false);
+                setSwapDone(false);
+                setIds({ order: "", swap: "" });
+            }, 1000);
+        }
+    }, [orderDone, swapDone, setOrderDone, setSwapDone, ids, setIds]);
+    return (
+        <div id={props.question.id} className="row fade-in mb-3">
+            <div
+                className={
+                    props.current
+                        ? "col-10 offset-1 response-card-current"
+                        : "col-10 offset-1 response-card"
+                }>
+                <div className="row">
+                    <div className="col-10">
+                        <div className="col-12 cw-response-info-bold">
+                            <strong>Question: </strong>
+                        </div>
+                        <div className="row">
+                            <div className="col-12 cw-response-text mb-2">
+                                {props.question.attributes.question}
+                            </div>
+                        </div>
+                        <div className="row text-center mt-2 mb-2">
+                            <div className="col-4">
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        props.setId(props.question.id);
+                                        props.setOrder(
+                                            props.question.attributes.order
+                                        );
+                                        document
+                                            .getElementById("deleteQuestion")
+                                            .showModal();
+                                        document.body.style.overflow = "hidden";
+                                    }}
+                                    className="btn btn-climate">
+                                    Delete
+                                </button>
+                            </div>
+                            <div className="col-4">
+                                <button className="btn btn-climate">
+                                    Edit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-2 m-auto">
+                        {!props.first ? (
+                            <div className="row">
+                                <div className="col-12 text-center">
+                                    <button
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            handleClick(
+                                                props.question.id,
+                                                props.prevId,
+                                                props.question.attributes.order,
+                                                props.question.attributes
+                                                    .order - 1
+                                            );
+                                        }}
+                                        className="btn mb-2 btn-climate-move">
+                                        &#8593;
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            ""
+                        )}
+                        <div className="row text-center">
+                            <div className="col-12 mb-2 cw-response-text text-center">
+                                {props.question.attributes.order}
+                            </div>
+                        </div>
+                        {!props.last ? (
+                            <div className="row">
+                                <div className="col-12 text-center">
+                                    <button
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            handleClick(
+                                                props.question.id,
+                                                props.nextId,
+                                                props.question.attributes.order,
+                                                props.question.attributes
+                                                    .order + 1
+                                            );
+                                        }}
+                                        className="btn mb-2 btn-climate-move">
+                                        &#8595;
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            ""
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function Loader() {
+    return (
+        <dialog className="loader-dialog" id="loader-dialog">
+            <img className="loader" src={Load} alt="Load" />
+        </dialog>
+    );
+}
+
 function Awaiting() {
     const { loading, error, data } = useQuery(GET_AWAITING, {
         pollInterval: 1000,

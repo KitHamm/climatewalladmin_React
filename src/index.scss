@@ -25,9 +25,9 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
         monospace;
 }
-
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+input[type="number"] {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
@@ -57,6 +57,19 @@ dialog {
 }
 dialog::backdrop {
     background-color: rgba(0, 0, 0, 0.5);
+}
+.loader-dialog {
+    top: 0;
+    bottom: 0;
+    border: none !important;
+    border-radius: 1rem;
+    box-shadow: 0 0 #0000, 0 0 #0000, 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    padding: 1.6rem;
+    max-width: 90vw;
+    background-color: rgba(0, 0, 0, 0);
+}
+.loader-dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.9);
 }
 .arrow {
     border: solid white;
@@ -96,6 +109,16 @@ dialog::backdrop {
     font-weight: 400 !important;
     letter-spacing: 4px;
     text-transform: uppercase;
+    background-color: $cwGreen !important;
+    color: black;
+    border-radius: 2rem !important;
+    box-shadow: 12.5px 12.5px 10px rgba(0, 0, 0, 0.025),
+        100px 100px 80px rgba(0, 0, 0, 0.05);
+}
+.btn-climate-move {
+    //font-family: "Outfit" !important;
+    //font-weight: 900 !important;
+    font-size: 25;
     background-color: $cwGreen !important;
     color: black;
     border-radius: 2rem !important;
@@ -288,7 +311,29 @@ dialog::backdrop {
         opacity: 1;
     }
 }
-
+.response-card-current {
+    color: white !important;
+    background-color: $bgGreen;
+    //padding: 1rem 1rem 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border-style: solid;
+    border-width: 5px;
+    border-color: white;
+    box-shadow: 12.5px 12.5px 10px rgba(0, 0, 0, 0.025),
+        100px 100px 80px rgba(0, 0, 0, 0.05);
+    animation: pulse 1s linear infinite;
+}
+@keyframes pulse {
+    0% {
+        border-color: white;
+    }
+    50% {
+        border-color: red;
+    }
+    100% {
+        border-color: white;
+    }
+}
 .fade-out {
     animation: fadeOut ease 0.33s;
     -webkit-animation: fadeOut ease 0.33s;
@@ -342,31 +387,27 @@ dialog::backdrop {
         opacity: 0;
     }
 }
+.loader-container {
+    top: 0;
+    left: 0;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+.loader-inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 .loader {
     width: 48px;
     height: 48px;
-    border: 3px solid #000000;
     border-radius: 50%;
-    display: inline-block;
-    position: relative;
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
-}
-.response-text {
-    font-size: 12pt;
-}
-.loader::after {
-    content: "";
-    box-sizing: border-box;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 40px;
-    min-height: 40px;
-    border-radius: 50%;
-    border: 3px solid;
-    border-color: rgb(0, 220, 160) transparent;
 }
 
 @keyframes rotation {
@@ -374,6 +415,10 @@ dialog::backdrop {
         transform: rotate(0deg);
     }
     100% {
-        transform: rotate(360deg);
+        transform: rotate(-360deg);
     }
+}
+
+.response-text {
+    font-size: 12pt;
 }

@@ -1,5 +1,72 @@
 import { gql } from "@apollo/client";
 
+export const QUESTIONS = gql`
+    query questions {
+        questions(filters: { approved: { eq: true } }, sort: ["order:asc"]) {
+            data {
+                id
+                attributes {
+                    question
+                    order
+                }
+            }
+        }
+    }
+`;
+
+export const ADD_QUESTION = gql`
+    mutation addQuestion($question: String!, $order: Int) {
+        createQuestion(
+            data: { question: $question, order: $order, approved: true }
+        ) {
+            data {
+                id
+                attributes {
+                    question
+                    order
+                }
+            }
+        }
+    }
+`;
+
+export const DELETE_QUESTION = gql`
+    mutation deleteQuestion($id: ID!) {
+        deleteQuestion(id: $id) {
+            data {
+                id
+            }
+        }
+    }
+`;
+
+export const CURRENT_QUESTION = gql`
+    query {
+        currentQuestion {
+            data {
+                attributes {
+                    number
+                    updatedAt
+                }
+            }
+        }
+    }
+`;
+
+export const UPDATE_QUESTION_ORDER = gql`
+    mutation updateQuestionOrder($id: ID!, $order: Int) {
+        updateQuestion(id: $id, data: { order: $order }) {
+            data {
+                id
+                attributes {
+                    question
+                    order
+                }
+            }
+        }
+    }
+`;
+
 export const GET_APPROVED = gql`
     query responses {
         responses(

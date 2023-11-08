@@ -50,6 +50,12 @@ export default function Login() {
                         path: "/climatewalladmin",
                     }
                 );
+                if (formState.username === "themediaworkshop") {
+                    cookies.set("superuser", true, {
+                        maxAge: 21600,
+                        path: "/climatewalladmin",
+                    });
+                }
                 setToken(data.login.jwt);
                 setLoggedIn(true);
             } else {
@@ -62,7 +68,7 @@ export default function Login() {
         <>
             <div className="container">
                 <div className="row vh-100">
-                    <div className="col-6 login offset-3 m-auto text-center">
+                    <div className="col-10 offset-1 login offset-3 m-auto text-center">
                         <form
                             onSubmit={(e) => {
                                 e.preventDefault();
