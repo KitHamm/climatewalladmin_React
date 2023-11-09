@@ -9,13 +9,16 @@ import {
     DENY,
     DELETE,
     QUESTIONS,
+    QUESTIONS_ASC,
+    QUESTIONS_DESC,
     UPDATE_QUESTION_ORDER,
     CURRENT_QUESTION,
     ADD_QUESTION,
     DELETE_QUESTION,
+    EDIT_QUESTION,
 } from "../components/queries";
 import Login from "../components/Login";
-import { useQuery, useMutation } from "@apollo/client";
+import { useQuery, useMutation, useLazyQuery } from "@apollo/client";
 export const loggedInContext = createContext();
 export const superUserContext = createContext();
 export default function Home() {
@@ -102,9 +105,9 @@ export default function Home() {
 function AddQuestion(props) {
     const [isLoading, setIsLoading] = useState(false);
     const [question, setQuestion] = useState("");
-    const [order, setOrder] = useState(props.amount + 1);
+    const [order, setOrder] = useState("");
     const [updateQuestionOrder] = useMutation(UPDATE_QUESTION_ORDER);
-    const [addQuestion, { loading, error, data }] = useMutation(ADD_QUESTION, {
+    const [addQuestion] = useMutation(ADD_QUESTION, {
         variables: { question: question, order: parseInt(order) },
     });
     function handleSubmit() {
@@ -134,6 +137,8 @@ function AddQuestion(props) {
             .catch((e) => {
                 console.log(e);
             });
+        setOrder("");
+        setQuestion("");
     }
     return (
         <dialog
@@ -257,6 +262,14 @@ function DeleteQuestion(props) {
                         <div className="col-12">
                             <div className="cw-title">Are you sure?</div>
                         </div>
+                        <div className="col-12 mb-4">
+                            <div className="cw-response-info-text">
+                                {props.order !== 0
+                                    ? props.data.questions.data[props.order - 1]
+                                          .attributes.question
+                                    : ""}
+                            </div>
+                        </div>
                     </div>
                     <div className="row">
                         <div className="col-12">
@@ -332,12 +345,12 @@ function Questions(props) {
                 {data.questions.data.map((question, index) => {
                     return (
                         <Question
+                            data={data}
                             setId={setId}
                             setOrder={setOrder}
                             current={
                                 currentQ.currentQuestion.data.attributes
-                                    .number ===
-                                question.attributes.order - 1
+                                    .number === question.attributes.order
                                     ? true
                                     : false
                             }
@@ -376,11 +389,25 @@ function Questions(props) {
 }
 
 function Question(props) {
-    const [updateQuestionOrder] = useMutation(UPDATE_QUESTION_ORDER);
-    const [updateQuestionSwap] = useMutation(UPDATE_QUESTION_ORDER);
+    const [formState, setFormsState] = useState({
+        question: "",
+        order: "",
+    });
+    const [isEdit, setIsEdit] = useState(false);
     const [ids, setIds] = useState({ order: "", swap: "" });
     const [orderDone, setOrderDone] = useState(false);
     const [swapDone, setSwapDone] = useState(false);
+    const [getQuestionsDesc] = useLazyQuery(QUESTIONS_DESC);
+    const [getQuestionsAsc] = useLazyQuery(QUESTIONS_ASC);
+    const [updateQuestionOrder] = useMutation(UPDATE_QUESTION_ORDER);
+    const [updateQuestionSwap] = useMutation(UPDATE_QUESTION_ORDER);
+    const [updateQuestion] = useMutation(EDIT_QUESTION, {
+        variables: {
+            id: props.question.id,
+            question: formState.question,
+            order: parseInt(formState.order),
+        },
+    });
     function handleClick(id, swapId, order, swapOrder) {
         document.getElementById(id).classList.replace("fade-in", "fade-out");
         document
@@ -398,6 +425,51 @@ function Question(props) {
             })
             .then((v) => setSwapDone(true))
             .catch((e) => console.log(e));
+    }
+    function handleSubmit() {
+        document.getElementById("loader-dialog").showModal();
+        document.body.style.overflow = "hidden";
+        updateQuestion().then(() => {
+            if (formState.order < props.question.attributes.order) {
+                getQuestionsDesc().then((e) => {
+                    for (let i = 0; i < e.data.questions.data.length; i++) {
+                        updateQuestionOrder({
+                            variables: {
+                                id: e.data.questions.data[i].id,
+                                order: i + 1,
+                            },
+                        });
+                    }
+                    setIsEdit(false);
+                    setTimeout(() => {
+                        document.getElementById("loader-dialog").close();
+                        document.body.style.overflow = null;
+                    }, 1500);
+                });
+            } else if (formState.order > props.question.attributes.order) {
+                getQuestionsAsc().then((e) => {
+                    for (let i = 0; i < e.data.questions.data.length; i++) {
+                        updateQuestionOrder({
+                            variables: {
+                                id: e.data.questions.data[i].id,
+                                order: i + 1,
+                            },
+                        });
+                    }
+                    setIsEdit(false);
+                    setTimeout(() => {
+                        document.getElementById("loader-dialog").close();
+                        document.body.style.overflow = null;
+                    }, 1500);
+                });
+            } else {
+                setIsEdit(false);
+                setTimeout(() => {
+                    document.getElementById("loader-dialog").close();
+                    document.body.style.overflow = null;
+                }, 1500);
+            }
+        });
     }
     useEffect(() => {
         if (orderDone && swapDone) {
@@ -425,91 +497,178 @@ function Question(props) {
                         : "col-10 offset-1 response-card"
                 }>
                 <div className="row">
-                    <div className="col-10">
-                        <div className="col-12 cw-response-info-bold">
-                            <strong>Question: </strong>
-                        </div>
-                        <div className="row">
-                            <div className="col-12 cw-response-text mb-2">
-                                {props.question.attributes.question}
-                            </div>
-                        </div>
-                        <div className="row text-center mt-2 mb-2">
-                            <div className="col-4">
-                                <button
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        props.setId(props.question.id);
-                                        props.setOrder(
-                                            props.question.attributes.order
-                                        );
-                                        document
-                                            .getElementById("deleteQuestion")
-                                            .showModal();
-                                        document.body.style.overflow = "hidden";
-                                    }}
-                                    className="btn btn-climate">
-                                    Delete
-                                </button>
-                            </div>
-                            <div className="col-4">
-                                <button className="btn btn-climate">
-                                    Edit
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-2 m-auto">
-                        {!props.first ? (
-                            <div className="row">
-                                <div className="col-12 text-center">
-                                    <button
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            handleClick(
-                                                props.question.id,
-                                                props.prevId,
-                                                props.question.attributes.order,
-                                                props.question.attributes
-                                                    .order - 1
-                                            );
-                                        }}
-                                        className="btn mb-2 btn-climate-move">
-                                        &#8593;
-                                    </button>
+                    {isEdit ? (
+                        <>
+                            <div className="col-9">
+                                <div className="col-12 cw-response-info-bold">
+                                    <strong>Question: </strong>
+                                </div>
+                                <div className="row">
+                                    <div className="col-12">
+                                        <textarea
+                                            style={{ height: "200px" }}
+                                            value={formState.question}
+                                            onChange={(e) => {
+                                                setFormsState({
+                                                    ...formState,
+                                                    question: e.target.value,
+                                                });
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="row text-center mt-2 mb-2">
+                                    <div className="col-3">
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                handleSubmit();
+                                            }}
+                                            className="btn btn-climate">
+                                            Save
+                                        </button>
+                                    </div>
+                                    <div className="col-3">
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                setIsEdit(false);
+                                            }}
+                                            className="btn btn-climate-red">
+                                            Cancel
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        ) : (
-                            ""
-                        )}
-                        <div className="row text-center">
-                            <div className="col-12 mb-2 cw-response-text text-center">
-                                {props.question.attributes.order}
-                            </div>
-                        </div>
-                        {!props.last ? (
-                            <div className="row">
-                                <div className="col-12 text-center">
-                                    <button
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            handleClick(
-                                                props.question.id,
-                                                props.nextId,
-                                                props.question.attributes.order,
-                                                props.question.attributes
-                                                    .order + 1
-                                            );
-                                        }}
-                                        className="btn mb-2 btn-climate-move">
-                                        &#8595;
-                                    </button>
+                            <div className="col-3">
+                                <div className="col-12 cw-response-info-bold">
+                                    <strong>Order: </strong>
+                                </div>
+                                <div className="row">
+                                    <div className="col-10">
+                                        <input
+                                            onChange={(e) => {
+                                                setFormsState({
+                                                    ...formState,
+                                                    order: e.target.value,
+                                                });
+                                            }}
+                                            value={formState.order}
+                                            type="number"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        ) : (
-                            ""
-                        )}
-                    </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="col-10">
+                                <div className="col-12 cw-response-info-bold">
+                                    <strong>Question: </strong>
+                                </div>
+                                <div className="row">
+                                    <div className="col-12 cw-response-text mb-2">
+                                        {props.question.attributes.question}
+                                    </div>
+                                </div>
+                                <div className="row text-center mt-2 mb-2">
+                                    <div className="col-4">
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                props.setId(props.question.id);
+                                                props.setOrder(
+                                                    props.question.attributes
+                                                        .order
+                                                );
+                                                document
+                                                    .getElementById(
+                                                        "deleteQuestion"
+                                                    )
+                                                    .showModal();
+                                                document.body.style.overflow =
+                                                    "hidden";
+                                            }}
+                                            className="btn btn-climate">
+                                            Delete
+                                        </button>
+                                    </div>
+                                    <div className="col-4">
+                                        <button
+                                            onClick={(e) => {
+                                                setFormsState({
+                                                    question:
+                                                        props.question
+                                                            .attributes
+                                                            .question,
+                                                    order: props.question
+                                                        .attributes.order,
+                                                });
+                                                setIsEdit(true);
+                                            }}
+                                            className="btn btn-climate">
+                                            Edit
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-2 m-auto">
+                                {!props.first ? (
+                                    <div className="row">
+                                        <div className="col-12 text-center">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    handleClick(
+                                                        props.question.id,
+                                                        props.prevId,
+                                                        props.question
+                                                            .attributes.order,
+                                                        props.question
+                                                            .attributes.order -
+                                                            1
+                                                    );
+                                                }}
+                                                className="btn mb-2 btn-climate-move">
+                                                &#8593;
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
+                                <div className="row text-center">
+                                    <div className="col-12 mb-2 cw-response-text text-center">
+                                        {props.question.attributes.order}
+                                    </div>
+                                </div>
+                                {!props.last ? (
+                                    <div className="row">
+                                        <div className="col-12 text-center">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    handleClick(
+                                                        props.question.id,
+                                                        props.nextId,
+                                                        props.question
+                                                            .attributes.order,
+                                                        props.question
+                                                            .attributes.order +
+                                                            1
+                                                    );
+                                                }}
+                                                className="btn mb-2 btn-climate-move">
+                                                &#8595;
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

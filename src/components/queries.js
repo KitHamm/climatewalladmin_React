@@ -8,6 +8,43 @@ export const QUESTIONS = gql`
                 attributes {
                     question
                     order
+                    updatedAt
+                }
+            }
+        }
+    }
+`;
+
+export const QUESTIONS_DESC = gql`
+    query questions {
+        questions(
+            filters: { approved: { eq: true } }
+            sort: ["order:asc", "updatedAt:desc"]
+        ) {
+            data {
+                id
+                attributes {
+                    question
+                    order
+                    updatedAt
+                }
+            }
+        }
+    }
+`;
+
+export const QUESTIONS_ASC = gql`
+    query questions {
+        questions(
+            filters: { approved: { eq: true } }
+            sort: ["order:asc", "updatedAt:asc"]
+        ) {
+            data {
+                id
+                attributes {
+                    question
+                    order
+                    updatedAt
                 }
             }
         }
@@ -47,6 +84,20 @@ export const CURRENT_QUESTION = gql`
                 attributes {
                     number
                     updatedAt
+                }
+            }
+        }
+    }
+`;
+
+export const EDIT_QUESTION = gql`
+    mutation updateQuestion($id: ID!, $question: String, $order: Int) {
+        updateQuestion(id: $id, data: { order: $order, question: $question }) {
+            data {
+                id
+                attributes {
+                    question
+                    order
                 }
             }
         }
