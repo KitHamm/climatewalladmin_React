@@ -345,12 +345,13 @@ function Questions(props) {
                 {data.questions.data.map((question, index) => {
                     return (
                         <Question
-                            data={data}
+                            videoId={question.attributes.video_id}
                             setId={setId}
                             setOrder={setOrder}
                             current={
                                 currentQ.currentQuestion.data.attributes
-                                    .number === question.attributes.order
+                                    .number ===
+                                question.attributes.order - 1
                                     ? true
                                     : false
                             }
@@ -392,6 +393,7 @@ function Question(props) {
     const [formState, setFormsState] = useState({
         question: "",
         order: "",
+        video: "",
     });
     const [isEdit, setIsEdit] = useState(false);
     const [ids, setIds] = useState({ order: "", swap: "" });
@@ -406,6 +408,7 @@ function Question(props) {
             id: props.question.id,
             question: formState.question,
             order: parseInt(formState.order),
+            video: formState.video,
         },
     });
     function handleClick(id, swapId, order, swapOrder) {
@@ -517,6 +520,7 @@ function Question(props) {
                                         />
                                     </div>
                                 </div>
+
                                 <div className="row text-center mt-2 mb-2">
                                     <div className="col-3">
                                         <button
@@ -558,6 +562,23 @@ function Question(props) {
                                         />
                                     </div>
                                 </div>
+                                <div className="col-12 cw-response-info-bold">
+                                    <strong>Video Id: </strong>
+                                </div>
+                                <div className="row">
+                                    <div className="col-10">
+                                        <input
+                                            onChange={(e) => {
+                                                setFormsState({
+                                                    ...formState,
+                                                    video: e.target.value,
+                                                });
+                                            }}
+                                            value={formState.video}
+                                            type="text"
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </>
                     ) : (
@@ -569,6 +590,14 @@ function Question(props) {
                                 <div className="row">
                                     <div className="col-12 cw-response-text mb-2">
                                         {props.question.attributes.question}
+                                    </div>
+                                </div>
+                                <div className="col-12 cw-response-info-bold">
+                                    <strong>Video Id: </strong>
+                                </div>
+                                <div className="row">
+                                    <div className="col-12 cw-response-text mb-2">
+                                        {props.videoId}
                                     </div>
                                 </div>
                                 <div className="row text-center mt-2 mb-2">
@@ -603,6 +632,7 @@ function Question(props) {
                                                             .question,
                                                     order: props.question
                                                         .attributes.order,
+                                                    video: props.videoId,
                                                 });
                                                 setIsEdit(true);
                                             }}

@@ -9,6 +9,7 @@ export const QUESTIONS = gql`
                     question
                     order
                     updatedAt
+                    video_id
                 }
             }
         }
@@ -91,8 +92,16 @@ export const CURRENT_QUESTION = gql`
 `;
 
 export const EDIT_QUESTION = gql`
-    mutation updateQuestion($id: ID!, $question: String, $order: Int) {
-        updateQuestion(id: $id, data: { order: $order, question: $question }) {
+    mutation updateQuestion(
+        $id: ID!
+        $question: String
+        $order: Int
+        $video: String
+    ) {
+        updateQuestion(
+            id: $id
+            data: { order: $order, question: $question, video_id: $video }
+        ) {
             data {
                 id
                 attributes {
