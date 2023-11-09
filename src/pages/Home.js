@@ -563,7 +563,7 @@ function Question(props) {
                                     </div>
                                 </div>
                                 <div className="col-12 cw-response-info-bold">
-                                    <strong>Video Id: </strong>
+                                    <strong>BG Tag: </strong>
                                 </div>
                                 <div className="row">
                                     <div className="col-10">
@@ -593,7 +593,7 @@ function Question(props) {
                                     </div>
                                 </div>
                                 <div className="col-12 cw-response-info-bold">
-                                    <strong>Video Id: </strong>
+                                    <strong>Background Tag: </strong>
                                 </div>
                                 <div className="row">
                                     <div className="col-12 cw-response-text mb-2">
