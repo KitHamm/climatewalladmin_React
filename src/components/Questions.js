@@ -1,125 +1,108 @@
-import { useQuery, useMutation } from "@apollo/client";
-import { QUESTIONS, APPROVE_QUESTION, DELETE_QUESTION } from "./queries";
+import { useState } from "react";
+import { useQuery } from "@apollo/client";
+import { QUESTIONS, CURRENT_QUESTION } from "./queries";
+import Question from "./Question";
+import Loader from "./Loader";
+import AddQuestion from "./AddQuestion";
+import DeleteQuestion from "./DeleteQuestion";
 
-export default function Questions() {
-    /* eslint-disable no-unused-vars */
-    const [
-        approveQuestion,
-        { loading: approveLoading, error: approveError, data: approveData },
-    ] = useMutation(APPROVE_QUESTION);
-    const [
-        deleteQuestion,
-        { loading: deleteLoading, error: deleteError, data: deleteData },
-    ] = useMutation(DELETE_QUESTION);
-    /* eslint-enable no-unused-vars */
-    const { loading, error, data } = useQuery(QUESTIONS);
-    if (loading)
+export default function Questions(props) {
+    const [order, setOrder] = useState(0);
+    const [id, setId] = useState(0);
+    const { data } = useQuery(QUESTIONS, {
+        pollInterval: 1000,
+    });
+    const { data: currentQ } = useQuery(CURRENT_QUESTION, {
+        pollInterval: 1000,
+    });
+    if (data && currentQ) {
         return (
-            <div className="row text-center">
-                <div className="col-12">
-                    <h5>Loading</h5>
+            <>
+                <div className="row mt-3">
+                    <div className="col-10 offset-1">
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                document
+                                    .getElementById("addQuestion")
+                                    .showModal();
+                                document.body.style.overflow = "hidden";
+                            }}
+                            className="mt-3 btn btn-climate">
+                            Add Question
+                        </button>
+                        <button
+                            style={{ float: "inline-end" }}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                props.setView(0);
+                            }}
+                            className="mt-3 btn btn-climate-red">
+                            Back
+                        </button>
+                    </div>
                 </div>
-            </div>
-        );
-    if (error)
-        return (
-            <div className="row text-center">
-                <div className="col-12">
-                    <h5>Error</h5>
+                <div className="row mt-3">
+                    <div className="col-10 offset-1 text-center">
+                        <div className="cw-title-green">Questions</div>
+                    </div>
                 </div>
-            </div>
-        );
-    const questions = data.questions.data;
-
-    function handleApproveQuestion(question) {
-        approveQuestion({
-            variables: {
-                id: question.id,
-                approved: true,
-            },
-        });
-        setTimeout(function () {
-            window.location.reload();
-        }, 1000);
-    }
-
-    function handleDeleteQuestion(question) {
-        deleteQuestion({ variables: { id: question.id } });
-        setTimeout(function () {
-            window.location.reload();
-        }, 1000);
-    }
-
-    return (
-        <>
-            <div className="row text-center">
-                <div className="col-12">
-                    <h5>Pending</h5>
-                </div>
-            </div>
-            {questions.map((question, index) => {
-                if (question.attributes.approved !== true) {
+                {data.questions.data.map((question, index) => {
                     return (
-                        <div key={+index} className="row mt-2 mb-2">
-                            <div className="col-12 text-center">
-                                <p>{question.attributes.question}</p>
-                            </div>
-                            <div className="col-6 text-end">
-                                <button
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        handleApproveQuestion(question);
-                                    }}
-                                    className="btn btn-success">
-                                    Approve
-                                </button>
-                            </div>
-                            <div className="col-6 text-start">
-                                <button
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        handleDeleteQuestion(question);
-                                    }}
-                                    className="btn btn-danger">
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
+                        <Question
+                            videoId={question.attributes.video_id}
+                            setId={setId}
+                            setOrder={setOrder}
+                            next={
+                                currentQ.currentQuestion.data.attributes
+                                    .number ===
+                                question.attributes.order - 2
+                                    ? true
+                                    : false
+                            }
+                            prev={
+                                currentQ.currentQuestion.data.attributes
+                                    .number === question.attributes.order
+                                    ? true
+                                    : false
+                            }
+                            current={
+                                currentQ.currentQuestion.data.attributes
+                                    .number ===
+                                question.attributes.order - 1
+                                    ? true
+                                    : false
+                            }
+                            key={index}
+                            question={question}
+                            prevId={
+                                index > 0
+                                    ? data.questions.data[index - 1].id
+                                    : 0
+                            }
+                            nextId={
+                                index < data.questions.data.length - 1
+                                    ? data.questions.data[index + 1].id
+                                    : 0
+                            }
+                            first={index === 0 ? true : false}
+                            last={
+                                index === data.questions.data.length - 1
+                                    ? true
+                                    : false
+                            }
+                        />
                     );
-                } else {
-                    return <></>;
-                }
-            })}
-            <div className="row text-center">
-                <div className="col-12">
-                    <h5>Approved</h5>
-                </div>
-            </div>
-            {questions.map((question, index) => {
-                if (question.attributes.approved === true) {
-                    return (
-                        <div
-                            key={"question-" + index}
-                            className="row text-center mt-2 mb-2">
-                            <div className="col-12">
-                                <p>{question.attributes.question}</p>
-                            </div>
-                            <div className="col-12 text-center">
-                                <button
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        handleDeleteQuestion(question);
-                                    }}
-                                    className="btn btn-danger">
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    );
-                } else {
-                    return <></>;
-                }
-            })}
-        </>
-    );
+                })}
+                <Loader />
+                <AddQuestion data={data} amount={data.questions.data.length} />
+                <DeleteQuestion
+                    order={order}
+                    id={id}
+                    data={data}
+                    amount={data.questions.data.length}
+                />
+            </>
+        );
+    }
 }
