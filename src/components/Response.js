@@ -135,21 +135,6 @@ export default function Response(props) {
                     ""
                 )}
                 <div className="col-12 text-end mb-3">
-                    {props.type !== "awaiting" && props.type !== "approved" ? (
-                        <div
-                            className="ms-2"
-                            style={{ display: "inline-block" }}>
-                            <button
-                                onClick={(e) => {
-                                    handleClick(e, "delete", props.id);
-                                }}
-                                className="btn btn-climate-red">
-                                Delete
-                            </button>
-                        </div>
-                    ) : (
-                        ""
-                    )}
                     {props.type === "awaiting" ? (
                         <div
                             className="ms-2"
