@@ -88,6 +88,15 @@ export default function Response(props) {
                     },
                 });
                 break;
+            case 5:
+                denyResponse({
+                    variables: {
+                        id: props.id,
+                        user: cookies.get("user"),
+                        reason: "Your response has not been approved as we cannot accept names of companies or people. Please refer to the user guide.",
+                    },
+                });
+                break;
             default:
                 break;
         }
@@ -180,6 +189,15 @@ export default function Response(props) {
                     <>
                         <div className="text-center">
                             <h4>Please choose a reason</h4>
+                        </div>
+                        <div className="mt-3">
+                            <button
+                                onClick={(e) => {
+                                    modalClick(e, 5);
+                                }}
+                                className="btn btn-climate">
+                                We cannot accept companies or peoples names
+                            </button>
                         </div>
                         <div className="mt-3">
                             <button
