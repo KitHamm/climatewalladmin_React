@@ -96,6 +96,8 @@ export default function Awaiting() {
                                 response={response.attributes.response}
                                 key={response.id}
                                 id={response.id}
+                                createdAt={response.attributes.createdAt}
+                                updatedAt={response.attributes.updatedAt}
                             />
                         );
                     })

@@ -261,6 +261,17 @@ dialog::backdrop {
     font-weight: 300;
     color: white;
 }
+.cw-date {
+    background-color: $cwGreen;
+    font-family: "Outfit";
+    font-weight: 800;
+    font-size: 18pt;
+    color: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
 .approved-container {
     width: 100%;
     transition: all 0.33s ease-in-out;

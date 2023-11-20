@@ -4,6 +4,7 @@ import Empty from "./Empty";
 import Response from "./Response";
 
 export default function Denied() {
+    const dates = [];
     const { loading, error, data } = useQuery(GET_DENIED, {
         pollInterval: 1000,
     });
@@ -71,16 +72,63 @@ export default function Denied() {
                     style={{ maxHeight: "0px" }}>
                     {data.responses.data.length > 0 ? (
                         data.responses.data.map((response, index) => {
+                            let dateElement = <></>;
+                            if (
+                                !dates.includes(
+                                    response.attributes.createdAt
+                                        .toString()
+                                        .split("T")[0]
+                                )
+                            ) {
+                                dates.push(
+                                    response.attributes.createdAt
+                                        .toString()
+                                        .split("T")[0]
+                                );
+                                dateElement = (
+                                    <div className="cw-date">
+                                        {
+                                            response.attributes.createdAt
+                                                .toString()
+                                                .split("T")[0]
+                                                .split("-")[2]
+                                        }
+                                        -
+                                        {
+                                            response.attributes.createdAt
+                                                .toString()
+                                                .split("T")[0]
+                                                .split("-")[1]
+                                        }
+                                        -
+                                        {
+                                            response.attributes.createdAt
+                                                .toString()
+                                                .split("T")[0]
+                                                .split("-")[0]
+                                        }
+                                    </div>
+                                );
+                            }
                             return (
-                                <Response
-                                    type="denied"
-                                    question={response.attributes.question}
-                                    response={response.attributes.response}
-                                    key={response.id}
-                                    id={response.id}
-                                    reason={response.attributes.reason}
-                                    user={response.attributes.approvedBy}
-                                />
+                                <div key={response.id}>
+                                    {dateElement}
+                                    <Response
+                                        type="denied"
+                                        question={response.attributes.question}
+                                        response={response.attributes.response}
+                                        key={response.id}
+                                        id={response.id}
+                                        reason={response.attributes.reason}
+                                        user={response.attributes.approvedBy}
+                                        createdAt={
+                                            response.attributes.createdAt
+                                        }
+                                        updatedAt={
+                                            response.attributes.updatedAt
+                                        }
+                                    />
+                                </div>
                             );
                         })
                     ) : (

@@ -138,6 +138,7 @@ export const GET_APPROVED = gql`
                 attributes {
                     response
                     createdAt
+                    updatedAt
                     approved
                     question
                     approvedBy
@@ -158,6 +159,7 @@ export const GET_DENIED = gql`
                 attributes {
                     response
                     createdAt
+                    updatedAt
                     approved
                     question
                     reason

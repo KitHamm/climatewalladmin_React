@@ -116,6 +116,12 @@ export default function Response(props) {
                 <div className="col-12 cw-response-text mb-3">
                     {props.response}
                 </div>
+                <div className="col-12 cw-response-info-bold">
+                    <strong>Received at: </strong>
+                </div>
+                <div className="col-12 cw-response-text mb-2">
+                    {props.createdAt.toString().split("T")[1].split(".")[0]}
+                </div>
                 {props.type === "denied" ? (
                     <>
                         <div className="col-12 cw-response-info-bold">
@@ -128,16 +134,28 @@ export default function Response(props) {
                             <strong>Denied by: </strong>
                         </div>
                         <div className="col-12 cw-response-text mb-2">
-                            {props.user}
+                            {props.user} <strong>at </strong>
+                            {
+                                props.updatedAt
+                                    .toString()
+                                    .split("T")[1]
+                                    .split(".")[0]
+                            }
                         </div>
                     </>
                 ) : props.type === "approved" ? (
                     <>
                         <div className="col-12 cw-response-info-bold">
                             <strong>Approved by: </strong>
-                        </div>
-                        <div className="col-12 cw-response-text mb-2">
-                            {props.user}
+                            <div className="col-12 cw-response-text mb-2">
+                                {props.user} <strong>at </strong>
+                                {
+                                    props.updatedAt
+                                        .toString()
+                                        .split("T")[1]
+                                        .split(".")[0]
+                                }
+                            </div>
                         </div>
                     </>
                 ) : (
