@@ -4,6 +4,7 @@ import Login from "../components/Login";
 import Awaiting from "../components/Awaiting";
 import Approved from "../components/Approved";
 import Denied from "../components/Denied";
+import WallResponses from "../components/WallResponses";
 import Questions from "../components/Questions";
 export const loggedInContext = createContext();
 export const superUserContext = createContext();
@@ -80,6 +81,7 @@ export default function Home() {
                 <>
                     <Awaiting />
                     <Approved />
+                    <WallResponses />
                     <Denied />
                 </>
             ) : (

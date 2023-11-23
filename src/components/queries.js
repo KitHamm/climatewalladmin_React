@@ -148,6 +148,26 @@ export const GET_APPROVED = gql`
     }
 `;
 
+export const GET_WALL_RESPONSES = gql`
+    query wall_responses {
+        qRepsonses(
+            filters: { from: { eq: "Wall" } }
+            sort: ["createdAt:desc"]
+        ) {
+            data {
+                id
+                attributes {
+                    from
+                    response
+                    createdAt
+                    updatedAt
+                    question
+                }
+            }
+        }
+    }
+`;
+
 export const GET_DENIED = gql`
     query responses {
         responses(
