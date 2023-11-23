@@ -21,7 +21,20 @@ export default function Denied() {
                 ).childNodes.length;
             }
         }
-    }, [testDates]);
+    }, [testDates, data]);
+    function handleLoadCount() {
+        for (let index = 0; index < testDates.length; index++) {
+            if (
+                document.getElementById(testDates[index] + "-container-denied")
+            ) {
+                document.getElementById(
+                    testDates[index] + "-count-denied"
+                ).innerHTML = document.getElementById(
+                    testDates[index] + "-container-denied"
+                ).childNodes.length;
+            }
+        }
+    }
     if (loading)
         return (
             <>
@@ -52,8 +65,8 @@ export default function Denied() {
                 )
             ) {
                 setTestDates([
-                    ...testDates,
                     response.attributes.createdAt.toString().split("T")[0],
+                    ...testDates,
                 ]);
             }
         });
@@ -67,6 +80,7 @@ export default function Denied() {
                             style={{ cursor: "pointer" }}
                             className="cw-title-green"
                             onClick={() => {
+                                handleLoadCount();
                                 var arrow =
                                     document.getElementById("arrow-denied");
                                 var el =
@@ -98,7 +112,7 @@ export default function Denied() {
                     className="denied-container fade-out"
                     id="denied-container"
                     style={{ maxHeight: "0px" }}>
-                    {testDates.reverse().map((date) => {
+                    {testDates.map((date) => {
                         return (
                             <div key={date}>
                                 <div
