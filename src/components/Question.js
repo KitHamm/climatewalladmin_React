@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client";
+import TextareaAutosize from "react-textarea-autosize";
 import {
     QUESTIONS_ASC,
     QUESTIONS_DESC,
@@ -12,6 +13,7 @@ export default function Question(props) {
         question: "",
         order: "",
         video: "",
+        words: "",
     });
     const [isEdit, setIsEdit] = useState(false);
     const [ids, setIds] = useState({ order: "", swap: "" });
@@ -27,6 +29,7 @@ export default function Question(props) {
             question: formState.question,
             order: parseInt(formState.order),
             video: formState.video,
+            words: formState.words,
         },
     });
     function handleClick(id, swapId, order, swapOrder) {
@@ -152,13 +155,31 @@ export default function Question(props) {
                                 </div>
                                 <div className="row">
                                     <div className="col-12">
-                                        <textarea
+                                        <TextareaAutosize
+                                            minRows={2}
                                             style={{ height: "200px" }}
                                             value={formState.question}
                                             onChange={(e) => {
                                                 setFormsState({
                                                     ...formState,
                                                     question: e.target.value,
+                                                });
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="col-12 cw-response-info-bold">
+                                    <strong>Words: </strong>
+                                </div>
+                                <div className="row">
+                                    <div className="col-12">
+                                        <TextareaAutosize
+                                            minRows={2}
+                                            value={formState.words}
+                                            onChange={(e) => {
+                                                setFormsState({
+                                                    ...formState,
+                                                    words: e.target.value,
                                                 });
                                             }}
                                         />
@@ -276,6 +297,14 @@ export default function Question(props) {
                                         {props.videoId}
                                     </div>
                                 </div>
+                                <div className="col-12 cw-response-info-bold">
+                                    <strong>Words: </strong>
+                                </div>
+                                <div className="row">
+                                    <div className="col-12 cw-response-text mb-2">
+                                        {props.words}
+                                    </div>
+                                </div>
                                 {!props.current ? (
                                     <>
                                         <div className="row text-center mt-2 mb-2">
@@ -316,6 +345,7 @@ export default function Question(props) {
                                                                 .attributes
                                                                 .order,
                                                             video: props.videoId,
+                                                            words: props.words,
                                                         });
                                                         setIsEdit(true);
                                                     }}

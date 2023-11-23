@@ -10,6 +10,7 @@ export const QUESTIONS = gql`
                     order
                     updatedAt
                     video_id
+                    words
                 }
             }
         }
@@ -52,22 +53,6 @@ export const QUESTIONS_ASC = gql`
     }
 `;
 
-export const ADD_QUESTION = gql`
-    mutation addQuestion($question: String!, $order: Int) {
-        createQuestion(
-            data: { question: $question, order: $order, approved: true }
-        ) {
-            data {
-                id
-                attributes {
-                    question
-                    order
-                }
-            }
-        }
-    }
-`;
-
 export const DELETE_QUESTION = gql`
     mutation deleteQuestion($id: ID!) {
         deleteQuestion(id: $id) {
@@ -97,10 +82,43 @@ export const EDIT_QUESTION = gql`
         $question: String
         $order: Int
         $video: String
+        $words: String
     ) {
         updateQuestion(
             id: $id
-            data: { order: $order, question: $question, video_id: $video }
+            data: {
+                order: $order
+                question: $question
+                video_id: $video
+                words: $words
+            }
+        ) {
+            data {
+                id
+                attributes {
+                    question
+                    order
+                }
+            }
+        }
+    }
+`;
+
+export const ADD_QUESTION = gql`
+    mutation addQuestion(
+        $question: String
+        $order: Int
+        $video: String
+        $words: String
+    ) {
+        createQuestion(
+            data: {
+                question: $question
+                order: $order
+                approved: true
+                video_id: $video
+                words: $words
+            }
         ) {
             data {
                 id

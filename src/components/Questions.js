@@ -75,6 +75,7 @@ export default function Questions(props) {
                             }
                             key={index}
                             question={question}
+                            words={question.attributes.words}
                             prevId={
                                 index > 0
                                     ? data.questions.data[index - 1].id

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
+import TextareaAutosize from "react-textarea-autosize";
 import { UPDATE_QUESTION_ORDER, ADD_QUESTION } from "./queries";
 import Load from "../images/load.png";
 
@@ -7,9 +8,16 @@ export default function AddQuestion(props) {
     const [isLoading, setIsLoading] = useState(false);
     const [question, setQuestion] = useState("");
     const [order, setOrder] = useState("");
+    const [videoTag, setVideoTag] = useState("");
+    const [words, setWords] = useState("");
     const [updateQuestionOrder] = useMutation(UPDATE_QUESTION_ORDER);
     const [addQuestion] = useMutation(ADD_QUESTION, {
-        variables: { question: question, order: parseInt(order) },
+        variables: {
+            question: question,
+            order: parseInt(order),
+            video: videoTag,
+            words: words,
+        },
     });
     function handleSubmit() {
         setIsLoading(true);
@@ -53,15 +61,15 @@ export default function AddQuestion(props) {
                 <img className="loader" src={Load} alt="Load" />
             ) : (
                 <>
-                    <div className="row">
-                        <div className="col-12">
-                            <div className="cw-title">Add Question</div>
-                        </div>
-                    </div>
+                    <div className="row"></div>
                     <div className="row">
                         <form className="row">
                             <div className="col-12">
-                                <textarea
+                                <div className="cw-title">Add Question</div>
+                            </div>
+                            <div className="col-12">
+                                <TextareaAutosize
+                                    minRows={2}
                                     value={question}
                                     onChange={(e) => {
                                         setQuestion(e.target.value);
@@ -70,7 +78,23 @@ export default function AddQuestion(props) {
                                 />
                             </div>
                             <div className="col-12">
+                                <div className="cw-title">Words</div>
+                            </div>
+                            <div className="col-12">
+                                <TextareaAutosize
+                                    minRows={2}
+                                    value={words}
+                                    onChange={(e) => {
+                                        setWords(e.target.value);
+                                    }}
+                                    style={{ width: "75vw" }}
+                                />
+                            </div>
+                            <div className="col-2">
                                 <div className="cw-title">Order</div>
+                            </div>
+                            <div className="col-10">
+                                <div className="cw-title">Video Tag</div>
                             </div>
                             <div className="col-2">
                                 <input
@@ -79,6 +103,15 @@ export default function AddQuestion(props) {
                                     }}
                                     value={order}
                                     type="number"
+                                />
+                            </div>
+                            <div className="col-2">
+                                <input
+                                    onChange={(e) => {
+                                        setVideoTag(e.target.value);
+                                    }}
+                                    value={videoTag}
+                                    type="text"
                                 />
                             </div>
                         </form>
