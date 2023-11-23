@@ -287,6 +287,11 @@ dialog::backdrop {
     transition: all 0.33s ease-in-out;
     overflow: hidden;
 }
+.wall-container {
+    width: 100%;
+    transition: all 0.33s ease-in-out;
+    overflow: hidden;
+}
 .fade-in {
     animation: fadeIn ease 0.33s;
     -webkit-animation: fadeIn ease 0.33s;

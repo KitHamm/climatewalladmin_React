@@ -173,7 +173,7 @@ export default function Denied() {
                                                 return (
                                                     <div key={response.id}>
                                                         <Response
-                                                            type="approved"
+                                                            type="denied"
                                                             question={
                                                                 response
                                                                     .attributes
@@ -189,6 +189,11 @@ export default function Denied() {
                                                                 response
                                                                     .attributes
                                                                     .approvedBy
+                                                            }
+                                                            reason={
+                                                                response
+                                                                    .attributes
+                                                                    .reason
                                                             }
                                                             createdAt={
                                                                 response
