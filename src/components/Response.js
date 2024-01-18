@@ -1,26 +1,40 @@
-import { useState } from "react";
+// Component to display the individual responses
+// Can display an awaiting, approved, or denied response
+
+// Apollo imports
 import { useMutation } from "@apollo/client";
+// React imports
+import { useState } from "react";
+// gql query imports
 import { APPROVE, DENY, DELETE } from "./queries";
+// cookies import
 import { cookies } from "../App";
 
 export default function Response(props) {
     /* eslint-disable no-unused-vars */
+    // state for denied reason
     const [formState, setFormState] = useState({
         reason: "",
     });
+    // mutation to approve the response
     const [
         approveResponse,
         { data: dataApprove, loading: loadingApprove, error: errorApprove },
     ] = useMutation(APPROVE);
+    // mutation to deny the response
     const [
         denyResponse,
         { data: dataDeny, loading: loadingDeny, error: errorDeny },
     ] = useMutation(DENY);
+    // mutation to delete the response
     const [
         deleteResponse,
         { data: dataDelete, loading: loadingDelete, error: errorDelete },
     ] = useMutation(DELETE);
     /* eslint-enable no-unused-vars */
+
+    // click handler for approving or denying or deleting a response
+    // deny and delete produces a modal for further information
     function handleClick(e, type, id) {
         e.preventDefault();
         if (type !== "deny") {
@@ -37,7 +51,6 @@ export default function Response(props) {
                 });
                 break;
             case "deny":
-                //denyResponse({ variables: { id: props.id } });
                 document.getElementById("deny-modal").showModal();
                 document.body.style.overflow = "hidden";
                 break;
@@ -48,6 +61,7 @@ export default function Response(props) {
                 break;
         }
     }
+    // deny response modal to give reason for denial
     function modalClick(e, type) {
         e.preventDefault();
         document.body.style.overflow = "auto";

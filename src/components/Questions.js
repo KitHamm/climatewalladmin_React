@@ -1,14 +1,22 @@
-import { useState } from "react";
+// A component to display the list of questions in the question pool
+
+// Apollo imports
 import { useQuery } from "@apollo/client";
+// React imports
+import { useState } from "react";
+// gql query imports
 import { QUESTIONS, CURRENT_QUESTION } from "./queries";
+// component imports
 import Question from "./Question";
 import Loader from "./Loader";
 import AddQuestion from "./AddQuestion";
 import DeleteQuestion from "./DeleteQuestion";
 
 export default function Questions(props) {
+    // states
     const [order, setOrder] = useState(0);
     const [id, setId] = useState(0);
+    // polling queries
     const { data } = useQuery(QUESTIONS, {
         pollInterval: 1000,
     });

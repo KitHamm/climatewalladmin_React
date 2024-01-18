@@ -1,14 +1,22 @@
-import { useState, useEffect } from "react";
+// Component to display a single question in the pool of questions
+// Only available to a user logged in as a super user
+
+// Apollo imports
 import { useLazyQuery, useMutation } from "@apollo/client";
-import TextareaAutosize from "react-textarea-autosize";
+// React imports
+import { useState, useEffect } from "react";
+// gql query imports
 import {
     QUESTIONS_ASC,
     QUESTIONS_DESC,
     EDIT_QUESTION,
     UPDATE_QUESTION_ORDER,
 } from "./queries";
+// library imports
+import TextareaAutosize from "react-textarea-autosize";
 
 export default function Question(props) {
+    // States
     const [formState, setFormsState] = useState({
         question: "",
         order: "",
@@ -19,6 +27,7 @@ export default function Question(props) {
     const [ids, setIds] = useState({ order: "", swap: "" });
     const [orderDone, setOrderDone] = useState(false);
     const [swapDone, setSwapDone] = useState(false);
+    // queries and mutations
     const [getQuestionsDesc] = useLazyQuery(QUESTIONS_DESC);
     const [getQuestionsAsc] = useLazyQuery(QUESTIONS_ASC);
     const [updateQuestionOrder] = useMutation(UPDATE_QUESTION_ORDER);
@@ -32,6 +41,7 @@ export default function Question(props) {
             words: formState.words,
         },
     });
+    // on click handler for re ordering questions. With this, questions can be moved up or down one place.
     function handleClick(id, swapId, order, swapOrder) {
         document.getElementById(id).classList.replace("fade-in", "fade-out");
         document
@@ -50,6 +60,7 @@ export default function Question(props) {
             .then((v) => setSwapDone(true))
             .catch((e) => console.log(e));
     }
+    // handle click for swapping two questions. Swaps the question with the question identified in the given order position.
     function handleSwap(oldOrder) {
         document.getElementById("loader-dialog").showModal();
         document.body.style.overflow = "hidden";
@@ -76,6 +87,7 @@ export default function Question(props) {
             });
         });
     }
+    // submit handler for editing a question, also has handler for if a new position was entered when the question was edited
     function handleSubmit() {
         document.getElementById("loader-dialog").showModal();
         document.body.style.overflow = "hidden";
@@ -121,6 +133,7 @@ export default function Question(props) {
             }
         });
     }
+    // to recognize when the swap is complete
     useEffect(() => {
         if (orderDone && swapDone) {
             setTimeout(() => {

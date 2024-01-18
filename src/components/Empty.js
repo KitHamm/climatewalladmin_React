@@ -1,3 +1,5 @@
+// component to display if responses are empty
+
 export default function Empty(props) {
     return (
         <div className="col-12 fade-in response-card">

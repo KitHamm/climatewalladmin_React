@@ -1,12 +1,19 @@
-import { useEffect, useState, useContext } from "react";
-import { cookies } from "../App";
-import { LOGIN, FULL_NAME } from "./queries";
+// Login screen for the moderator area
+
+// APollo imports
 import { useMutation, useQuery } from "@apollo/client";
+// React imports
+import { useEffect, useState, useContext } from "react";
+// gql query imports
+import { LOGIN, FULL_NAME } from "./queries";
+// context/cookies import
+import { cookies } from "../App";
 import { loggedInContext } from "../pages/Home";
 import { tokenContext } from "../App";
 
 export default function Login() {
     /* eslint-disable no-unused-vars */
+    // States
     const [loggedIn, setLoggedIn] = useContext(loggedInContext);
     const [token, setToken] = useContext(tokenContext);
     const [errorText, setErrorText] = useState("");
@@ -15,17 +22,22 @@ export default function Login() {
         username: "",
         password: "",
     });
+    // Login mutation
     const [login, { data }] = useMutation(LOGIN, {
         variables: {
             username: formState.username.replace(" ", "").toLowerCase(),
             password: formState.password.toLowerCase(),
         },
     });
+    // fill with user ID when available. This will then be used to track who has approved and denied which responses.
+    // Wrongly approving a response can result libel.
     const userId = data?.login?.user?.id;
+    // when user id is available query for full name to use
     const { data: fullNameData } = useQuery(FULL_NAME, {
         skip: !userId,
         variables: { id: userId },
     });
+    // login submit handler with catch for wrong credentials
     function handleSubmit() {
         login().catch((e) => {
             setErrorText("Incorrect username or password.");
@@ -33,6 +45,8 @@ export default function Login() {
         });
     }
     useEffect(() => {
+        // set cookies representative to login details and if use is super user
+        // super user has access to modify and delete questions in the question pool for the projection
         if (fullNameData !== undefined) {
             if (
                 fullNameData.usersPermissionsUser.data.attributes.role.data
@@ -64,6 +78,8 @@ export default function Login() {
             }
         }
     }, [data, setToken, setLoggedIn, formState.username, fullNameData]);
+
+    // Login form
     return (
         <>
             <div className="container">

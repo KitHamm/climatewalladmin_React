@@ -1,14 +1,24 @@
-import { useState } from "react";
+// Dialog to delete a question from the pool of questions
+
+// Apollo imports
 import { useMutation } from "@apollo/client";
+// React imports
+import { useState } from "react";
+// gql query imports
 import { UPDATE_QUESTION_ORDER, DELETE_QUESTION } from "./queries";
+// component imports
 import Load from "../images/load.png";
 
 export default function DeleteQuestion(props) {
     const [loading, setLoading] = useState(false);
+    // mutation to update the order that the questions will appear
     const [updateQuestionOrder] = useMutation(UPDATE_QUESTION_ORDER);
+    // mutation to delete the question
     const [deleteQuestion] = useMutation(DELETE_QUESTION, {
         variables: { id: props.id },
     });
+    // delete submission handler
+    // deletes the question and then updates the order for each question after
     function handleSubmit() {
         setLoading(true);
         deleteQuestion()

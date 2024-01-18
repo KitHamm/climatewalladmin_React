@@ -1,11 +1,19 @@
+// Component to show all of the denied responses
+
+// APollo imports
 import { useQuery } from "@apollo/client";
+// React imports
+import { useEffect, useState } from "react";
+// gql query imports
 import { GET_DENIED } from "./queries";
+// component imports
 import Empty from "./Empty";
 import Response from "./Response";
-import { useEffect, useState } from "react";
 
 export default function Denied() {
+    // functionality testing dates
     const [testDates, setTestDates] = useState([]);
+    // get all denied responses query
     const { loading, error, data } = useQuery(GET_DENIED, {
         pollInterval: 1000,
     });
@@ -22,6 +30,8 @@ export default function Denied() {
             }
         }
     }, [testDates, data]);
+    // display how many denied responses there are
+    // css class should be more universal and not attributed to denied as it is used elsewhere
     function handleLoadCount() {
         for (let index = 0; index < testDates.length; index++) {
             if (
@@ -76,6 +86,7 @@ export default function Denied() {
             <>
                 <div className="col-12 mt-4 mb-4">
                     <div className="col-12">
+                        {/* Expandable div to hide responses as there are a lot */}
                         <div
                             style={{ cursor: "pointer" }}
                             className="cw-title-green"
@@ -173,6 +184,7 @@ export default function Denied() {
                                         }}></div>
                                     )
                                 </div>
+                                {/* display the response with the response component */}
                                 <div
                                     id={date + "-container-denied"}
                                     className="date-response-container"

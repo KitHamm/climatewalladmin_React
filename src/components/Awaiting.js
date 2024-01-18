@@ -1,12 +1,21 @@
-import { useState, useEffect } from "react";
+// Component to show all of the responses awaiting approval.
+// Has options to approve or to deny and give reason for denial.
+
+// Apollo imports
 import { useQuery } from "@apollo/client";
+// React imports
+import { useState, useEffect } from "react";
+// gql query imports
 import { GET_AWAITING } from "./queries";
+// cookies import for login
 import { cookies } from "../App";
+// component imports
 import Response from "./Response";
 import Empty from "./Empty";
 import Notification from "../audio/notification.wav";
 
 export default function Awaiting() {
+    // state for if notification sound should be played or not
     const [notifications, setNotifications] = useState(false);
     const [count, setCount] = useState(0);
     const { loading, error, data } = useQuery(GET_AWAITING, {
@@ -17,6 +26,7 @@ export default function Awaiting() {
             setNotifications(cookies.get("notifications"));
         }
     }, []);
+    // if notifications turned on, play sound when new response is available
     useEffect(() => {
         if (data) {
             if (data.responses.data.length !== count) {
@@ -62,6 +72,9 @@ export default function Awaiting() {
             </>
         );
     if (data) {
+        {
+            /* Display the responses with the awaiting state */
+        }
         return (
             <>
                 <div className="row mt-4 mb-4">

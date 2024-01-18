@@ -1,15 +1,24 @@
-import { useState } from "react";
+// Add a question to the pool of questions that will appear on the wall
+
+// Apollo imports
 import { useMutation } from "@apollo/client";
-import TextareaAutosize from "react-textarea-autosize";
+// gql query imports
 import { UPDATE_QUESTION_ORDER, ADD_QUESTION } from "./queries";
+// React imports
+import { useState } from "react";
+// Library imports
+import TextareaAutosize from "react-textarea-autosize";
+// component imports
 import Load from "../images/load.png";
 
 export default function AddQuestion(props) {
+    // States
     const [isLoading, setIsLoading] = useState(false);
     const [question, setQuestion] = useState("");
     const [order, setOrder] = useState("");
     const [videoTag, setVideoTag] = useState("");
     const [words, setWords] = useState("");
+    // GraphQL mutations
     const [updateQuestionOrder] = useMutation(UPDATE_QUESTION_ORDER);
     const [addQuestion] = useMutation(ADD_QUESTION, {
         variables: {
@@ -19,6 +28,7 @@ export default function AddQuestion(props) {
             words: words,
         },
     });
+    // Handle adding the new question and where it should be placed in the order
     function handleSubmit() {
         setIsLoading(true);
         addQuestion()
@@ -49,6 +59,7 @@ export default function AddQuestion(props) {
         setOrder("");
         setQuestion("");
     }
+    // form dialog for adding question
     return (
         <dialog
             style={

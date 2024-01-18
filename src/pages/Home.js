@@ -1,17 +1,23 @@
-import { useEffect, useState, createContext } from "react";
+// Apollo imports
 import { useQuery } from "@apollo/client";
+// React imports
+import { useEffect, useState, createContext } from "react";
+// gql query imports
 import {
     GET_WALL_RESPONSES,
     GET_APPROVED,
     GET_DENIED,
 } from "../components/queries";
+// cookies import for login
 import { cookies } from "../App";
+// component imports
 import Login from "../components/Login";
 import Awaiting from "../components/Awaiting";
 import Approved from "../components/Approved";
 import Denied from "../components/Denied";
 import WallResponses from "../components/WallResponses";
 import Questions from "../components/Questions";
+// Library impots for downloading data into CSV
 import { CSVLink } from "react-csv";
 export const loggedInContext = createContext();
 export const superUserContext = createContext();
@@ -35,6 +41,8 @@ export default function Home() {
         loading: loadingDenied,
         error: errorDenied,
     } = useQuery(GET_DENIED);
+
+    // headers for CSV Download
     const headers = [
         { label: "Response", key: "response" },
         { label: "Question", key: "question" },
@@ -44,6 +52,7 @@ export default function Home() {
         { label: "Time", key: "time" },
     ];
 
+    // reset login status if jwt found in cookies
     useEffect(() => {
         if (cookies.get("jwt")) {
             setLoggedIn(true);
@@ -74,6 +83,7 @@ export default function Home() {
                         </div>
                     </div>
                     <div>
+                        {/* Log out and remove cookies */}
                         <button
                             onClick={(e) => {
                                 e.preventDefault();
@@ -93,20 +103,23 @@ export default function Home() {
                             Log Out
                         </button>
                     </div>
-                    {cookies.get("superuser") === true && view === 0 ? (
-                        <div>
-                            <button
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    setView(1);
-                                }}
-                                className="mt-3 btn btn-climate">
-                                Questions
-                            </button>
-                        </div>
-                    ) : (
-                        ""
-                    )}
+                    {
+                        // view only available to super user accounts to be able to modify and delete questions that will appear on the wall
+                        cookies.get("superuser") === true && view === 0 ? (
+                            <div>
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setView(1);
+                                    }}
+                                    className="mt-3 btn btn-climate">
+                                    Questions
+                                </button>
+                            </div>
+                        ) : (
+                            ""
+                        )
+                    }
                     {dataWall && dataApproved && dataDenied ? (
                         <div>
                             <CSVLink
@@ -125,16 +138,19 @@ export default function Home() {
                     )}
                 </div>
             </div>
-            {view === 0 ? (
-                <>
-                    <Awaiting />
-                    <Approved />
-                    <WallResponses />
-                    <Denied />
-                </>
-            ) : (
-                <Questions setView={setView} />
-            )}
+            {
+                // views for all responses grouped
+                view === 0 ? (
+                    <>
+                        <Awaiting />
+                        <Approved />
+                        <WallResponses />
+                        <Denied />
+                    </>
+                ) : (
+                    <Questions setView={setView} />
+                )
+            }
         </div>
     );
 }
@@ -178,7 +194,6 @@ function formatDate(date) {
     var tempString;
     tempString = date.split("T")[0];
     tempString = tempString.split("-");
-    //tempString[1] = tempString[1] - 1;
     tempString.reverse();
     tempString = tempString.join("-");
     return tempString;
