@@ -1,4 +1,10 @@
 import { useEffect, useState, createContext } from "react";
+import { useQuery } from "@apollo/client";
+import {
+    GET_WALL_RESPONSES,
+    GET_APPROVED,
+    GET_DENIED,
+} from "../components/queries";
 import { cookies } from "../App";
 import Login from "../components/Login";
 import Awaiting from "../components/Awaiting";
@@ -6,12 +12,38 @@ import Approved from "../components/Approved";
 import Denied from "../components/Denied";
 import WallResponses from "../components/WallResponses";
 import Questions from "../components/Questions";
+import { CSVLink } from "react-csv";
 export const loggedInContext = createContext();
 export const superUserContext = createContext();
 
 export default function Home() {
     const [view, setView] = useState(0);
     const [loggedIn, setLoggedIn] = useState(false);
+    const [csvWallData, setCSVWallData] = useState([]);
+    const {
+        data: dataWall,
+        loading: loadingWall,
+        error: errorWall,
+    } = useQuery(GET_WALL_RESPONSES);
+    const {
+        data: dataApproved,
+        loading: loadingApproved,
+        error: errorApproved,
+    } = useQuery(GET_APPROVED);
+    const {
+        data: dataDenied,
+        loading: loadingDenied,
+        error: errorDenied,
+    } = useQuery(GET_DENIED);
+    const headers = [
+        { label: "Response", key: "response" },
+        { label: "Question", key: "question" },
+        { label: "From", key: "from" },
+        { label: "Approved", key: "approved" },
+        { label: "Date", key: "date" },
+        { label: "Time", key: "time" },
+    ];
+
     useEffect(() => {
         if (cookies.get("jwt")) {
             setLoggedIn(true);
@@ -75,6 +107,22 @@ export default function Home() {
                     ) : (
                         ""
                     )}
+                    {dataWall && dataApproved && dataDenied ? (
+                        <div>
+                            <CSVLink
+                                className="mt-3 btn btn-climate"
+                                headers={headers}
+                                data={downloadCSV(
+                                    dataWall.qRepsonses.data,
+                                    dataApproved.responses.data,
+                                    dataDenied.responses.data
+                                )}>
+                                Download
+                            </CSVLink>
+                        </div>
+                    ) : (
+                        ""
+                    )}
                 </div>
             </div>
             {view === 0 ? (
@@ -89,4 +137,54 @@ export default function Home() {
             )}
         </div>
     );
+}
+
+function downloadCSV(dataWall, dataApproved, dataDenied) {
+    var csvData = [];
+    dataWall.forEach((element) => {
+        csvData.push({
+            response: element.attributes.response,
+            question: element.attributes.question,
+            from: element.attributes.from,
+            approved: "N/A",
+            date: formatDate(element.attributes.createdAt),
+            time: formatTime(element.attributes.createdAt),
+        });
+    });
+    dataApproved.forEach((element) => {
+        csvData.push({
+            response: element.attributes.response,
+            question: element.attributes.question,
+            from: "App",
+            approved: "Approved",
+            date: formatDate(element.attributes.createdAt),
+            time: formatTime(element.attributes.createdAt),
+        });
+    });
+    dataDenied.forEach((element) => {
+        csvData.push({
+            response: element.attributes.response,
+            question: element.attributes.question,
+            from: "App",
+            approved: "Denied",
+            date: formatDate(element.attributes.createdAt),
+            time: formatTime(element.attributes.createdAt),
+        });
+    });
+    return csvData;
+}
+
+function formatDate(date) {
+    var tempString;
+    tempString = date.split("T")[0];
+    tempString = tempString.split("-");
+    //tempString[1] = tempString[1] - 1;
+    tempString.reverse();
+    tempString = tempString.join("-");
+    return tempString;
+}
+function formatTime(date) {
+    var tempString;
+    tempString = date.split("T")[1].split(".")[0];
+    return tempString;
 }

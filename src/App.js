@@ -10,7 +10,7 @@ import { setContext } from "@apollo/client/link/context";
 import Home from "./pages/Home";
 import { createContext, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-export const url = "https://cms.plasticelephant.co.uk";
+export const url = process.env.REACT_APP_URL;
 
 export const tokenContext = createContext();
 export const cookies = new Cookies(null, { path: "/climatewalladmin" });
